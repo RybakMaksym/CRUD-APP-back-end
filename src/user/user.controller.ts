@@ -2,6 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 
 import { Auth } from 'auth/decorators/auth.decorator';
 
+import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -10,7 +11,7 @@ export class UserController {
 
   @Get()
   @Auth()
-  findAll() {
+  async findAllUsers(): Promise<User[]> {
     return this.userService.findAll();
   }
 }
