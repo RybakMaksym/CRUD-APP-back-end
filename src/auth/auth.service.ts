@@ -81,7 +81,7 @@ export class AuthService {
       if (!result) throw new BadRequestException('Invalid refresh token');
 
       const user = await this.userService.findById(result.id);
-      console.log(result.id);
+
       const tokens = this.issueTokens(user.id);
 
       return {
