@@ -16,15 +16,15 @@ import { AuthResponseDTO } from './dto/auth.response.dto';
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly JWTservice: JwtService,
+    private readonly jwtService: JwtService,
     private readonly userService: UserService,
   ) {}
 
   private issueTokens(userID: string) {
     const payload = { id: userID };
     return {
-      accessToken: this.JWTservice.sign(payload, { expiresIn: '1h' }),
-      refreshToken: this.JWTservice.sign(payload, { expiresIn: '7d' }),
+      accessToken: this.jwtService.sign(payload, { expiresIn: '1h' }),
+      refreshToken: this.jwtService.sign(payload, { expiresIn: '7d' }),
     };
   }
 
@@ -76,7 +76,7 @@ export class AuthService {
 
   async getNewTokens(refreshToken: string): Promise<AuthResponseDTO> {
     try {
-      const result = await this.JWTservice.verifyAsync(refreshToken);
+      const result = await this.jwtService.verifyAsync(refreshToken);
 
       if (!result) throw new BadRequestException('Invalid refresh token');
 
