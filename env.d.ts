@@ -2,5 +2,8 @@ declare namespace NodeJS {
   export interface ProcessEnv {
     PORT: number;
     DB_CONNECTION_URI: string;
+    JWT_SECRET: string;
+    REFRESH_TOKEN_NAME: string;
+    EXPIRE_DAY_REFRESH_TOKEN: number;
   }
 }
