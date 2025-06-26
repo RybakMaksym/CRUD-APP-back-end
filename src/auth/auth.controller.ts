@@ -56,7 +56,7 @@ export class AuthController {
 
     if (!refreshTokenFromCookies) {
       this.tokenService.removeRefreshTokenFromResponse(res);
-      throw new UnauthorizedException('Refresh token not passed');
+      throw new UnauthorizedException('Unauthorized');
     }
 
     const { refreshToken, ...response } = await this.tokenService.getNewTokens(
@@ -76,7 +76,7 @@ export class AuthController {
     const refreshTokenFromCookies = req.cookies[process.env.REFRESH_TOKEN_NAME];
 
     if (!refreshTokenFromCookies) {
-      throw new UnauthorizedException('Refresh token not passed');
+      throw new UnauthorizedException('Unauthorized');
     }
 
     this.tokenService.removeRefreshTokenFromResponse(res);
