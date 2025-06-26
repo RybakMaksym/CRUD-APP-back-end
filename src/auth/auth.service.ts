@@ -6,8 +6,8 @@ import {
 import { verify } from 'argon2';
 
 import { User } from 'user/entities/user.entity';
+import { UserService } from 'user/user.service';
 
-import { UserService } from '../user/user.service';
 import { AuthLogInDTO, AuthRegisterDTO } from './dto/auth.dto';
 import { TokenService } from './token.service';
 import { IAuthResponse } from './types/auth.response';
