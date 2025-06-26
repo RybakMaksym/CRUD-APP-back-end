@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 
@@ -29,7 +33,7 @@ export class TokenService {
 
   private async verifyToken(refreshToken: string): Promise<any> {
     const result = await this.jwtService.verifyAsync(refreshToken);
-    if (!result) throw new BadRequestException('Invalid refresh token');
+    if (!result) throw new UnauthorizedException('Unauthorized');
 
     return result;
   }
