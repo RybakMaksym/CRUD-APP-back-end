@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { hash } from 'argon2';
 
 import { AuthRegisterDTO } from 'auth/dto/auth.dto';
 
@@ -11,10 +10,7 @@ export class UserService {
   constructor(private readonly userRepo: UserRepository) {}
 
   public async create(dto: AuthRegisterDTO): Promise<User> {
-    return this.userRepo.create({
-      ...dto,
-      password: await hash(dto.password),
-    });
+    return this.userRepo.create(dto);
   }
 
   public async findByEmail(email: string): Promise<User | null> {

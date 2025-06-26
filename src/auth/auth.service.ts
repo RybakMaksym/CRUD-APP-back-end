@@ -3,8 +3,8 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { verify } from 'argon2';
 
+import { comparePasswords } from 'helpers/comparePasswords';
 import { User } from 'user/entities/user.entity';
 import { UserService } from 'user/user.service';
 
@@ -24,7 +24,10 @@ export class AuthService {
 
     if (!user) throw new NotFoundException('User not found');
 
-    const isPasswordValid = await verify(user.password, dto.password);
+    const isPasswordValid = await comparePasswords(
+      dto.password,
+      user.passwordHash,
+    );
 
     if (!isPasswordValid) throw new BadRequestException('Invalid password');
 
