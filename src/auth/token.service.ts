@@ -14,7 +14,7 @@ export class TokenService {
     private readonly userService: UserService,
   ) {}
 
-  public issueTokens(userID: string): ITokens {
+  private generateJwtTokens(userID: string): ITokens {
     const payload = { id: userID };
 
     return {
@@ -36,7 +36,7 @@ export class TokenService {
 
       const user = await this.userService.findById(result.id);
 
-      const tokens = this.issueTokens(user.id);
+      const tokens = this.generateJwtTokens(user.id);
 
       return {
         user: {
