@@ -5,6 +5,7 @@ import { Response } from 'express';
 import { UserService } from 'user/user.service';
 
 import { AuthResponseDTO } from './dto/auth.response.dto';
+import { ITokens } from './types/tokens';
 
 @Injectable()
 export class TokenService {
@@ -13,10 +14,7 @@ export class TokenService {
     private readonly userService: UserService,
   ) {}
 
-  public issueTokens(userID: string): {
-    accessToken: string;
-    refreshToken: string;
-  } {
+  public issueTokens(userID: string): ITokens {
     const payload = { id: userID };
 
     return {
