@@ -2,9 +2,9 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 
+import { IAuthResponse } from 'auth/types/auth.response';
 import { UserService } from 'user/user.service';
 
-import { IAuthResponse } from './types/auth.response';
 import { ITokens } from './types/tokens';
 
 @Injectable()

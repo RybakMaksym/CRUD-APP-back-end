@@ -5,11 +5,11 @@ import {
 } from '@nestjs/common';
 
 import { comparePasswords } from 'helpers/comparePasswords';
+import { TokenService } from 'token/token.service';
 import { User } from 'user/entities/user.entity';
 import { UserService } from 'user/user.service';
 
 import { AuthLogInDTO, AuthRegisterDTO } from './dto/auth.dto';
-import { TokenService } from './token.service';
 import { IAuthResponse } from './types/auth.response';
 
 @Injectable()

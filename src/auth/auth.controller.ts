@@ -11,9 +11,10 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 
+import { TokenService } from 'token/token.service';
+
 import { AuthService } from './auth.service';
 import { AuthLogInDTO, AuthRegisterDTO } from './dto/auth.dto';
-import { TokenService } from './token.service';
 import { IAuthResponse } from './types/auth.response';
 
 @Controller('auth')
@@ -42,27 +43,6 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ): Promise<IAuthResponse> {
     const { refreshToken, ...response } = await this.authService.logIn(dto);
-    this.tokenService.addRefreshTokenToResponse(res, refreshToken);
-
-    return response;
-  }
-
-  @Get('log-in/access-token')
-  public async getNewToken(
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
-  ): Promise<IAuthResponse> {
-    const refreshTokenFromCookies = req.cookies[process.env.REFRESH_TOKEN_NAME];
-
-    if (!refreshTokenFromCookies) {
-      this.tokenService.removeRefreshTokenFromResponse(res);
-      throw new UnauthorizedException('Unauthorized');
-    }
-
-    const { refreshToken, ...response } = await this.tokenService.getNewTokens(
-      refreshTokenFromCookies,
-    );
-
     this.tokenService.addRefreshTokenToResponse(res, refreshToken);
 
     return response;
