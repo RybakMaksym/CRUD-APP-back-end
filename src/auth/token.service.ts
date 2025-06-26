@@ -18,8 +18,12 @@ export class TokenService {
     const payload = { id: userID };
 
     return {
-      accessToken: this.jwtService.sign(payload, { expiresIn: '1h' }),
-      refreshToken: this.jwtService.sign(payload, { expiresIn: '7d' }),
+      accessToken: this.jwtService.sign(payload, {
+        expiresIn: `${process.env.EXPIRE_DAY_ACCESS_TOKEN}d`,
+      }),
+      refreshToken: this.jwtService.sign(payload, {
+        expiresIn: `${process.env.EXPIRE_DAY_REFRESH_TOKEN}d`,
+      }),
     };
   }
 
