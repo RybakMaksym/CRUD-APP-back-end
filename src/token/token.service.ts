@@ -24,6 +24,9 @@ export class TokenService {
   public async verifyToken(refreshToken: string): Promise<string> {
     const result = await this.jwtService.verifyAsync<{ id: string }>(
       refreshToken,
+      {
+        secret: process.env.REFRESH_TOKEN_SECRET,
+      },
     );
     if (!result?.id) throw new UnauthorizedException('Unauthorized');
     return result.id;
