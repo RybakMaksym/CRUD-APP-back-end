@@ -4,7 +4,7 @@ import { Document } from 'mongoose';
 export type UserDocument = User & Document;
 
 @Schema()
-export class User {
+export class User extends Document {
   @Prop({ required: true, unique: true, lowercase: true })
   email: string;
 
@@ -16,10 +16,6 @@ export class User {
 
   @Prop({ default: false })
   isAdmin: boolean;
-
-  get id(): string {
-    return (this as any)._id?.toString();
-  }
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

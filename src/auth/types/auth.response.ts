@@ -1,7 +1,10 @@
-import { User } from 'user/entities/user.entity';
-
 export interface IAuthResponse {
-  user: Omit<User, 'passwordHash'>;
+  user: {
+    id: string;
+    email: string;
+    username: string;
+    isAdmin: boolean;
+  };
   accessToken: string;
   refreshToken: string;
 }
