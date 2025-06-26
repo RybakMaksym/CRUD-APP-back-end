@@ -1,38 +1,22 @@
-import {
-  Controller,
-  Get,
-  Req,
-  Res,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { Request, Response } from 'express';
-
-import { IAuthResponse } from 'auth/types/auth.response';
+import { Controller, Get, Req, UnauthorizedException } from '@nestjs/common';
+import { Request } from 'express';
 
 import { TokenService } from './token.service';
+import { ITokens } from './types/tokens';
 
 @Controller('token')
 export class TokenController {
   constructor(private readonly tokenService: TokenService) {}
 
   @Get('access-token')
-  public async getNewToken(
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
-  ): Promise<IAuthResponse> {
-    const refreshTokenFromCookies = req.cookies[process.env.REFRESH_TOKEN_NAME];
+  public async getNewToken(@Req() req: Request): Promise<ITokens> {
+    const refreshToken = req.headers.authorization?.split(' ')[1];
 
-    if (!refreshTokenFromCookies) {
-      this.tokenService.removeRefreshTokenFromResponse(res);
+    if (!refreshToken) {
       throw new UnauthorizedException('Unauthorized');
     }
 
-    const { refreshToken, ...response } = await this.tokenService.getNewTokens(
-      refreshTokenFromCookies,
-    );
-
-    this.tokenService.addRefreshTokenToResponse(res, refreshToken);
-
-    return response;
+    const userId = await this.tokenService.verifyToken(refreshToken);
+    return this.tokenService.generateJwtTokens(userId);
   }
 }

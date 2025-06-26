@@ -2,20 +2,14 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 
-import { IAuthResponse } from 'auth/types/auth.response';
-import { UserService } from 'user/user.service';
-
 import { ITokens } from './types/tokens';
 
 @Injectable()
 export class TokenService {
-  constructor(
-    private readonly jwtService: JwtService,
-    private readonly userService: UserService,
-  ) {}
+  constructor(private readonly jwtService: JwtService) {}
 
-  public generateJwtTokens(userID: string): ITokens {
-    const payload = { id: userID };
+  public generateJwtTokens(userId: string): ITokens {
+    const payload = { id: userId };
 
     return {
       accessToken: this.jwtService.sign(payload, {
@@ -27,33 +21,12 @@ export class TokenService {
     };
   }
 
-  private async verifyToken(refreshToken: string): Promise<any> {
-    const result = await this.jwtService.verifyAsync(refreshToken);
-    if (!result) throw new UnauthorizedException('Unauthorized');
-
-    return result;
-  }
-
-  public async getNewTokens(refreshToken: string): Promise<IAuthResponse> {
-    try {
-      const result = await this.verifyToken(refreshToken);
-
-      const user = await this.userService.findById(result.id);
-
-      const tokens = this.generateJwtTokens(user.id);
-
-      return {
-        user: {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          isAdmin: user.isAdmin,
-        },
-        ...tokens,
-      };
-    } catch {
-      throw new UnauthorizedException('Unauthorized');
-    }
+  public async verifyToken(refreshToken: string): Promise<string> {
+    const result = await this.jwtService.verifyAsync<{ id: string }>(
+      refreshToken,
+    );
+    if (!result?.id) throw new UnauthorizedException('Unauthorized');
+    return result.id;
   }
 
   public addRefreshTokenToResponse(res: Response, refreshToken: string) {
