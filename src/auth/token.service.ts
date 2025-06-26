@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Response } from 'express';
 
@@ -56,7 +52,7 @@ export class TokenService {
         ...tokens,
       };
     } catch {
-      throw new BadRequestException('Invalid or expired refresh token');
+      throw new UnauthorizedException('Unauthorized');
     }
   }
 
