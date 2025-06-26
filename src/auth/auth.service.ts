@@ -4,13 +4,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
+import { AuthLogInDTO, AuthRegisterDTO } from 'auth/dto/auth.dto';
+import { IAuthResponse } from 'auth/types/auth.response';
 import { comparePasswords } from 'helpers/comparePasswords';
 import { TokenService } from 'token/token.service';
 import { User } from 'user/entities/user.entity';
 import { UserService } from 'user/user.service';
-
-import { AuthLogInDTO, AuthRegisterDTO } from './dto/auth.dto';
-import { IAuthResponse } from './types/auth.response';
 
 @Injectable()
 export class AuthService {

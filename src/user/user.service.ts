@@ -4,8 +4,7 @@ import { Model } from 'mongoose';
 
 import { AuthRegisterDTO } from 'auth/dto/auth.dto';
 import { hashPassword } from 'helpers/hashPassword';
-
-import { User, UserDocument } from './entities/user.entity';
+import { User, UserDocument } from 'user/entities/user.entity';
 
 @Injectable()
 export class UserService {

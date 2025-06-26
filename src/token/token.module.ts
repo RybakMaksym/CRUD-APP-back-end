@@ -3,10 +3,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 
 import { getJWTConfig } from 'config/jwt.config';
+import { TokenController } from 'token/token.controller';
+import { TokenService } from 'token/token.service';
 import { UserModule } from 'user/user.module';
-
-import { TokenController } from './token.controller';
-import { TokenService } from './token.service';
 
 @Module({
   imports: [

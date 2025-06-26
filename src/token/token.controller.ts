@@ -6,11 +6,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
+import { ITokens } from 'token/types/tokens';
 
 import { RefreshTokenGuard } from 'auth/guards/refresh-token.guard';
-
-import { TokenService } from './token.service';
-import { ITokens } from './types/tokens';
+import { TokenService } from 'token/token.service';
 
 @Controller('token')
 export class TokenController {

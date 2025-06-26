@@ -1,7 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-
-import { ITokens } from './types/tokens';
+import { ITokens } from 'token/types/tokens';
 
 @Injectable()
 export class TokenService {

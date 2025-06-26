@@ -1,9 +1,8 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 
 import { AccessTokenGuard } from 'auth/guards/access-token.guard';
-
-import { User } from './entities/user.entity';
-import { UserService } from './user.service';
+import { User } from 'user/entities/user.entity';
+import { UserService } from 'user/user.service';
 
 @Controller('user')
 export class UserController {
