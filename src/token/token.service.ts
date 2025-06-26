@@ -11,9 +11,11 @@ export class TokenService {
 
     return {
       accessToken: this.jwtService.sign(payload, {
+        secret: process.env.ACCESS_TOKEN_SECRET,
         expiresIn: `${process.env.EXPIRE_DAY_ACCESS_TOKEN}d`,
       }),
       refreshToken: this.jwtService.sign(payload, {
+        secret: process.env.REFRESH_TOKEN_SECRET,
         expiresIn: `${process.env.EXPIRE_DAY_REFRESH_TOKEN}d`,
       }),
     };
