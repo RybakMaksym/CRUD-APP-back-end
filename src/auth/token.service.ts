@@ -23,11 +23,16 @@ export class TokenService {
     };
   }
 
+  private async verifyToken(refreshToken: string): Promise<any> {
+    const result = await this.jwtService.verifyAsync(refreshToken);
+    if (!result) throw new BadRequestException('Invalid refresh token');
+
+    return result;
+  }
+
   public async getNewTokens(refreshToken: string): Promise<AuthResponseDTO> {
     try {
-      const result = await this.jwtService.verifyAsync(refreshToken);
-
-      if (!result) throw new BadRequestException('Invalid refresh token');
+      const result = await this.verifyToken(refreshToken);
 
       const user = await this.userService.findById(result.id);
 
