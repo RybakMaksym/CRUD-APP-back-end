@@ -31,7 +31,7 @@ export class AuthService {
     return user;
   }
 
-  async register(dto: AuthRegisterDTO): Promise<AuthResponseDTO> {
+  public async register(dto: AuthRegisterDTO): Promise<AuthResponseDTO> {
     const oldUser = await this.userService.findByEmail(dto.email);
 
     if (oldUser) throw new BadRequestException('User already exists');
@@ -50,7 +50,7 @@ export class AuthService {
     };
   }
 
-  async logIn(dto: AuthLogInDTO): Promise<AuthResponseDTO> {
+  public async logIn(dto: AuthLogInDTO): Promise<AuthResponseDTO> {
     const user = await this.validateUser(dto);
     const tokens = this.tokenService.issueTokens(user.id);
 

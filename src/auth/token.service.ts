@@ -13,7 +13,7 @@ export class TokenService {
     private readonly userService: UserService,
   ) {}
 
-  issueTokens(userID: string): {
+  public issueTokens(userID: string): {
     accessToken: string;
     refreshToken: string;
   } {
@@ -25,7 +25,7 @@ export class TokenService {
     };
   }
 
-  async getNewTokens(refreshToken: string): Promise<AuthResponseDTO> {
+  public async getNewTokens(refreshToken: string): Promise<AuthResponseDTO> {
     try {
       const result = await this.jwtService.verifyAsync(refreshToken);
 
@@ -49,7 +49,7 @@ export class TokenService {
     }
   }
 
-  addRefreshTokenToResponse(res: Response, refreshToken: string) {
+  public addRefreshTokenToResponse(res: Response, refreshToken: string) {
     const expiresIn = new Date();
     expiresIn.setDate(
       expiresIn.getDate() + +process.env.EXPIRE_DAY_REFRESH_TOKEN,
@@ -63,7 +63,7 @@ export class TokenService {
     });
   }
 
-  removeRefreshTokenFromResponse(res: Response) {
+  public removeRefreshTokenFromResponse(res: Response) {
     res.cookie(process.env.REFRESH_TOKEN_NAME, '', {
       httpOnly: true,
       expires: new Date(0),

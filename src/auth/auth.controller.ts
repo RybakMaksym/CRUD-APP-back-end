@@ -25,7 +25,7 @@ export class AuthController {
 
   @UsePipes(new ValidationPipe())
   @Post('register')
-  async register(
+  public async register(
     @Body() dto: AuthRegisterDTO,
     @Res({ passthrough: true }) res: Response,
   ): Promise<AuthResponseDTO> {
@@ -37,7 +37,7 @@ export class AuthController {
 
   @UsePipes(new ValidationPipe())
   @Post('log-in')
-  async logIn(
+  public async logIn(
     @Body() dto: AuthLogInDTO,
     @Res({ passthrough: true }) res: Response,
   ): Promise<AuthResponseDTO> {
@@ -48,7 +48,7 @@ export class AuthController {
   }
 
   @Get('log-in/access-token')
-  async getNewToken(
+  public async getNewToken(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ): Promise<AuthResponseDTO> {
@@ -69,7 +69,7 @@ export class AuthController {
   }
 
   @Get('log-out')
-  async logOut(
+  public async logOut(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ): Promise<{ message: string }> {
