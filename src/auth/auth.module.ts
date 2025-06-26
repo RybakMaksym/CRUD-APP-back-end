@@ -5,11 +5,12 @@ import { UserModule } from 'user/user.module';
 
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { JWTStrategy } from './strategies/jwt.strategy';
+import { AccessTokenStrategy } from './strategies/access-token-stategy';
+import { RefreshTokenStrategy } from './strategies/refresh-token-strategy';
 
 @Module({
   imports: [UserModule, TokenModule],
   controllers: [AuthController],
-  providers: [AuthService, JWTStrategy],
+  providers: [AuthService, AccessTokenStrategy, RefreshTokenStrategy],
 })
 export class AuthModule {}

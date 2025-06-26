@@ -1,6 +1,6 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 
-import { JWTAuthGuard } from 'auth/guards/jwt-auth.guard';
+import { AccessTokenGuard } from 'auth/guards/access-token.guard';
 
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
@@ -10,7 +10,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  @UseGuards(JWTAuthGuard)
+  @UseGuards(AccessTokenGuard)
   public async findAllUsers(): Promise<User[]> {
     return this.userService.findAll();
   }

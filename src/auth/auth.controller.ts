@@ -1,17 +1,10 @@
 import {
   Body,
   Controller,
-  Get,
   Post,
-  Req,
-  Res,
-  UnauthorizedException,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
-
-import { TokenService } from 'token/token.service';
 
 import { AuthService } from './auth.service';
 import { AuthLogInDTO, AuthRegisterDTO } from './dto/auth.dto';
@@ -19,47 +12,17 @@ import { IAuthResponse } from './types/auth.response';
 
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private readonly authService: AuthService,
-    private readonly tokenService: TokenService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   @UsePipes(new ValidationPipe())
   @Post('register')
-  public async register(
-    @Body() dto: AuthRegisterDTO,
-    @Res({ passthrough: true }) res: Response,
-  ): Promise<IAuthResponse> {
-    const { refreshToken, ...response } = await this.authService.register(dto);
-    this.tokenService.addRefreshTokenToResponse(res, refreshToken);
-
-    return response;
+  public async register(@Body() dto: AuthRegisterDTO): Promise<IAuthResponse> {
+    return this.authService.register(dto);
   }
 
   @UsePipes(new ValidationPipe())
   @Post('log-in')
-  public async logIn(
-    @Body() dto: AuthLogInDTO,
-    @Res({ passthrough: true }) res: Response,
-  ): Promise<IAuthResponse> {
-    const { refreshToken, ...response } = await this.authService.logIn(dto);
-    this.tokenService.addRefreshTokenToResponse(res, refreshToken);
-
-    return response;
-  }
-
-  @Get('log-out')
-  public async logOut(
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
-  ): Promise<{ message: string }> {
-    const refreshTokenFromCookies = req.cookies[process.env.REFRESH_TOKEN_NAME];
-
-    if (!refreshTokenFromCookies) {
-      throw new UnauthorizedException('Unauthorized');
-    }
-
-    this.tokenService.removeRefreshTokenFromResponse(res);
-    return { message: 'Logged out successfully' };
+  public async logIn(@Body() dto: AuthLogInDTO): Promise<IAuthResponse> {
+    return this.authService.logIn(dto);
   }
 }
