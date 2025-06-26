@@ -37,7 +37,7 @@ export class AuthService {
     if (oldUser) throw new BadRequestException('User already exists');
 
     const user = await this.userService.create(dto);
-    const tokens = this.tokenService.issueTokens(user.id);
+    const tokens = this.tokenService.generateJwtTokens(user.id);
 
     return {
       user: {
@@ -52,7 +52,7 @@ export class AuthService {
 
   public async logIn(dto: AuthLogInDTO): Promise<AuthResponseDTO> {
     const user = await this.validateUser(dto);
-    const tokens = this.tokenService.issueTokens(user.id);
+    const tokens = this.tokenService.generateJwtTokens(user.id);
 
     return {
       user: {

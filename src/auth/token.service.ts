@@ -14,7 +14,7 @@ export class TokenService {
     private readonly userService: UserService,
   ) {}
 
-  private generateJwtTokens(userID: string): ITokens {
+  public generateJwtTokens(userID: string): ITokens {
     const payload = { id: userID };
 
     return {
