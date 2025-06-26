@@ -9,8 +9,8 @@ import { User } from 'user/entities/user.entity';
 
 import { UserService } from '../user/user.service';
 import { AuthLogInDTO, AuthRegisterDTO } from './dto/auth.dto';
-import { AuthResponseDTO } from './dto/auth.response.dto';
 import { TokenService } from './token.service';
+import { IAuthResponse } from './types/auth.response';
 
 @Injectable()
 export class AuthService {
@@ -31,7 +31,7 @@ export class AuthService {
     return user;
   }
 
-  public async register(dto: AuthRegisterDTO): Promise<AuthResponseDTO> {
+  public async register(dto: AuthRegisterDTO): Promise<IAuthResponse> {
     const oldUser = await this.userService.findByEmail(dto.email);
 
     if (oldUser) throw new BadRequestException('User already exists');
@@ -50,7 +50,7 @@ export class AuthService {
     };
   }
 
-  public async logIn(dto: AuthLogInDTO): Promise<AuthResponseDTO> {
+  public async logIn(dto: AuthLogInDTO): Promise<IAuthResponse> {
     const user = await this.validateUser(dto);
     const tokens = this.tokenService.generateJwtTokens(user.id);
 

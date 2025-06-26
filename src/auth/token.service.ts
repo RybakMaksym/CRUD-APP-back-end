@@ -4,7 +4,7 @@ import { Response } from 'express';
 
 import { UserService } from 'user/user.service';
 
-import { AuthResponseDTO } from './dto/auth.response.dto';
+import { IAuthResponse } from './types/auth.response';
 import { ITokens } from './types/tokens';
 
 @Injectable()
@@ -34,7 +34,7 @@ export class TokenService {
     return result;
   }
 
-  public async getNewTokens(refreshToken: string): Promise<AuthResponseDTO> {
+  public async getNewTokens(refreshToken: string): Promise<IAuthResponse> {
     try {
       const result = await this.verifyToken(refreshToken);
 

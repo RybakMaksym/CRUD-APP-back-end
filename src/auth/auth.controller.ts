@@ -13,8 +13,8 @@ import { Request, Response } from 'express';
 
 import { AuthService } from './auth.service';
 import { AuthLogInDTO, AuthRegisterDTO } from './dto/auth.dto';
-import { AuthResponseDTO } from './dto/auth.response.dto';
 import { TokenService } from './token.service';
+import { IAuthResponse } from './types/auth.response';
 
 @Controller('auth')
 export class AuthController {
@@ -28,7 +28,7 @@ export class AuthController {
   public async register(
     @Body() dto: AuthRegisterDTO,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<AuthResponseDTO> {
+  ): Promise<IAuthResponse> {
     const { refreshToken, ...response } = await this.authService.register(dto);
     this.tokenService.addRefreshTokenToResponse(res, refreshToken);
 
@@ -40,7 +40,7 @@ export class AuthController {
   public async logIn(
     @Body() dto: AuthLogInDTO,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<AuthResponseDTO> {
+  ): Promise<IAuthResponse> {
     const { refreshToken, ...response } = await this.authService.logIn(dto);
     this.tokenService.addRefreshTokenToResponse(res, refreshToken);
 
@@ -51,7 +51,7 @@ export class AuthController {
   public async getNewToken(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<AuthResponseDTO> {
+  ): Promise<IAuthResponse> {
     const refreshTokenFromCookies = req.cookies[process.env.REFRESH_TOKEN_NAME];
 
     if (!refreshTokenFromCookies) {
