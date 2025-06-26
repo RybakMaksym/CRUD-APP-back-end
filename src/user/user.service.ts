@@ -1,27 +1,34 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 import { AuthRegisterDTO } from 'auth/dto/auth.dto';
+import { hashPassword } from 'helpers/hashPassword';
 
-import { User } from './entities/user.entity';
-import { UserRepository } from './user.repository';
+import { User, UserDocument } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
-  constructor(private readonly userRepo: UserRepository) {}
+  constructor(
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+  ) {}
 
   public async create(dto: AuthRegisterDTO): Promise<User> {
-    return this.userRepo.create(dto);
+    return this.userModel.create({
+      ...dto,
+      passwordHash: await hashPassword(dto.password),
+    });
   }
 
   public async findByEmail(email: string): Promise<User | null> {
-    return this.userRepo.findByEmail(email);
+    return this.userModel.findOne({ email }).exec();
   }
 
   public async findById(id: string): Promise<User | null> {
-    return this.userRepo.findById(id);
+    return this.userModel.findOne({ _id: id }).exec();
   }
 
   public async findAll(): Promise<User[]> {
-    return this.userRepo.findAll();
+    return this.userModel.find().exec();
   }
 }
