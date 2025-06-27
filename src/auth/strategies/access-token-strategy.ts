@@ -3,6 +3,8 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
+import { JwtReValidateResult } from 'auth/types/jwt-validate-result';
+
 type JwtPayload = {
   id: string;
 };
@@ -19,7 +21,7 @@ export class AccessTokenStrategy extends PassportStrategy(
     });
   }
 
-  async validate(payload: JwtPayload) {
+  public async validate(payload: JwtPayload): JwtReValidateResult {
     return { userId: payload.id };
   }
 }
