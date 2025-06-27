@@ -6,7 +6,7 @@ declare namespace NodeJS {
     REFRESH_TOKEN_SECRET: string;
     SALT_ROUNDS: number;
     REFRESH_TOKEN_NAME: string;
-    EXPIRE_DAY_ACCESS_TOKEN: number;
-    EXPIRE_DAY_REFRESH_TOKEN: number;
+    EXPIRE_DAY_ACCESS_TOKEN: string;
+    EXPIRE_DAY_REFRESH_TOKEN: string;
   }
 }

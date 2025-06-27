@@ -17,11 +17,11 @@ export class TokenService {
     return {
       accessToken: this.jwtService.sign(payload, {
         secret: this.configService.get<string>('ACCESS_TOKEN_SECRET'),
-        expiresIn: `${process.env.EXPIRE_DAY_ACCESS_TOKEN}d`,
+        expiresIn: this.configService.get<string>('EXPIRE_DAY_ACCESS_TOKEN'),
       }),
       refreshToken: this.jwtService.sign(payload, {
         secret: this.configService.get<string>('REFRESH_TOKEN_SECRET'),
-        expiresIn: `${process.env.EXPIRE_DAY_REFRESH_TOKEN}d`,
+        expiresIn: this.configService.get<string>('EXPIRE_DAY_REFRESH_TOKEN'),
       }),
     };
   }
