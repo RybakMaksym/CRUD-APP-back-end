@@ -18,6 +18,8 @@ export class AccessTokenStrategy extends PassportStrategy(
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       secretOrKey: configService.get<string>('ACCESS_TOKEN_SECRET'),
+      ignoreExpiration: false,
+      algorithms: ['HS256'],
     });
   }
 
