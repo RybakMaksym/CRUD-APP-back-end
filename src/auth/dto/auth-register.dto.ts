@@ -12,12 +12,12 @@ import { Role } from 'user/types/role';
 export class AuthRegisterDTO {
   @IsNotEmpty()
   @IsString()
-  username: string;
+  public username: string;
 
   @IsNotEmpty()
   @IsString()
   @IsEmail()
-  email: string;
+  public email: string;
 
   @IsNotEmpty()
   @IsString()
@@ -28,8 +28,8 @@ export class AuthRegisterDTO {
     message:
       'Password must not contain spaces or invalid characters like quotes or backslashes',
   })
-  password: string;
+  public password: string;
 
   @IsOptional()
-  role?: Role;
+  public role?: Role;
 }

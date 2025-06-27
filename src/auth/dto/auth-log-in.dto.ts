@@ -4,9 +4,9 @@ export class AuthLogInDTO {
   @IsNotEmpty()
   @IsString()
   @IsEmail()
-  email: string;
+  public email: string;
 
   @IsNotEmpty()
   @IsString()
-  password: string;
+  public password: string;
 }

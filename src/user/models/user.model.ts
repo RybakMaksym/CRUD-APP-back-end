@@ -21,19 +21,19 @@ export type UserDocument = User & Document;
 })
 export class User extends Document {
   @Prop({ required: true, unique: true, lowercase: true })
-  email: string;
+  public email: string;
 
   @Prop({ required: true })
-  passwordHash: string;
+  public passwordHash: string;
 
   @Prop({ required: true })
-  username: string;
+  public username: string;
 
   @Prop({ default: 'user' })
-  role: Role;
+  public role: Role;
 
   @Prop()
-  refreshToken?: string;
+  public refreshToken?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
