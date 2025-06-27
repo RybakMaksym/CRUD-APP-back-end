@@ -3,7 +3,6 @@ import {
   Controller,
   Get,
   Req,
-  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
@@ -26,9 +25,9 @@ export class TokenController {
     }
 
     const userId = await this.tokenService.verifyToken(refreshToken);
+    const tokens = await this.tokenService.generateJwtTokens(userId);
+    await this.tokenService.saveTokenToDb(userId, tokens.refreshToken);
 
-    if (!userId) throw new UnauthorizedException('Unauthorized');
-
-    return this.tokenService.generateJwtTokens(userId);
+    return tokens;
   }
 }

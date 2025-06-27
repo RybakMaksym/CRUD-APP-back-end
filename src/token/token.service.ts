@@ -1,14 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
+import { comparePasswords, hashPassword } from 'helpers/password';
 import { ITokens } from 'token/types/tokens';
+import { UserService } from 'user/user.service';
 
 @Injectable()
 export class TokenService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly userService: UserService,
   ) {}
 
   public generateJwtTokens(userId: string): ITokens {
@@ -26,14 +29,26 @@ export class TokenService {
     };
   }
 
+  public async saveTokenToDb(userId: string, refreshToken: string) {
+    await this.userService.update(userId, {
+      refreshToken: hashPassword(refreshToken),
+    });
+  }
+
   public async verifyToken(refreshToken: string): Promise<string> {
-    const result = await this.jwtService.verifyAsync<{ id: string }>(
+    const { id } = await this.jwtService.verifyAsync<{ id: string }>(
       refreshToken,
       {
         secret: this.configService.get<string>('REFRESH_TOKEN_SECRET'),
       },
     );
 
-    return result.id;
+    const user = await this.userService.findById(id);
+
+    if (!id || comparePasswords(user.refreshToken, refreshToken)) {
+      throw new UnauthorizedException('Unauthorized');
+    }
+
+    return id;
   }
 }
