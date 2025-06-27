@@ -40,6 +40,7 @@ export class AuthService {
 
     const user = await this.userService.create(dto);
     const tokens = this.tokenService.generateJwtTokens(user.id);
+    await this.tokenService.saveTokenToDb(user.id, tokens.refreshToken);
 
     return {
       user: {
@@ -55,6 +56,7 @@ export class AuthService {
   public async logInUser(dto: AuthLogInDTO): Promise<IAuthResponse> {
     const user = await this.validateUserPassword(dto);
     const tokens = this.tokenService.generateJwtTokens(user.id);
+    await this.tokenService.saveTokenToDb(user.id, tokens.refreshToken);
 
     return {
       user: {
