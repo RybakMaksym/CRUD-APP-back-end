@@ -18,7 +18,7 @@ export class AuthService {
     private readonly tokenService: TokenService,
   ) {}
 
-  private async validateUser(dto: AuthLogInDTO): Promise<User> {
+  private async validateUserPassword(dto: AuthLogInDTO): Promise<User> {
     const user = await this.userService.findByEmail(dto.email);
 
     if (!user) throw new NotFoundException('User not found');
@@ -53,7 +53,7 @@ export class AuthService {
   }
 
   public async logIn(dto: AuthLogInDTO): Promise<IAuthResponse> {
-    const user = await this.validateUser(dto);
+    const user = await this.validateUserPassword(dto);
     const tokens = this.tokenService.generateJwtTokens(user.id);
 
     return {
