@@ -1,5 +1,5 @@
+import { PartialType } from '@nestjs/mapped-types';
 import {
-  IsEmail,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -7,17 +7,13 @@ import {
   Matches,
 } from 'class-validator';
 
+import { AuthLogInDTO } from 'auth/dto/auth-log-in.dto';
 import { Role } from 'user/types/role';
 
-export class AuthRegisterDTO {
+export class AuthRegisterDTO extends PartialType(AuthLogInDTO) {
   @IsNotEmpty()
   @IsString()
   public username: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @IsEmail()
-  public email: string;
 
   @IsNotEmpty()
   @IsString()
