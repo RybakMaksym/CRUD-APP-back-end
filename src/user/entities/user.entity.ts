@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
+import { Role } from 'user/types/role';
+
 export type UserDocument = User & Document;
 
 @Schema()
@@ -14,8 +16,8 @@ export class User extends Document {
   @Prop({ required: true })
   username: string;
 
-  @Prop({ default: false })
-  isAdmin: boolean;
+  @Prop({ default: 'user' })
+  role: Role;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

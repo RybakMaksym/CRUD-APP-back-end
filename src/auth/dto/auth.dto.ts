@@ -1,10 +1,6 @@
-import {
-  IsBoolean,
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+
+import { Role } from 'user/types/role';
 
 export class AuthRegisterDTO {
   @IsNotEmpty()
@@ -20,9 +16,8 @@ export class AuthRegisterDTO {
   @IsString()
   password: string;
 
-  @IsBoolean()
   @IsOptional()
-  isAdmin?: boolean;
+  role?: Role;
 }
 
 export class AuthLogInDTO {
