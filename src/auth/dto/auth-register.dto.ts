@@ -19,14 +19,3 @@ export class AuthRegisterDTO {
   @IsOptional()
   role?: Role;
 }
-
-export class AuthLogInDTO {
-  @IsNotEmpty()
-  @IsString()
-  @IsEmail()
-  email: string;
-
-  @IsNotEmpty()
-  @IsString()
-  password: string;
-}

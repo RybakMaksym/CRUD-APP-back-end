@@ -4,7 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { AuthLogInDTO, AuthRegisterDTO } from 'auth/dto/auth.dto';
+import { AuthLogInDTO } from 'auth/dto/auth-log-in.dto';
+import { AuthRegisterDTO } from 'auth/dto/auth-register.dto';
 import { IAuthResponse } from 'auth/types/auth.response';
 import { compareHash } from 'helpers/hash';
 import { TokenService } from 'token/token.service';

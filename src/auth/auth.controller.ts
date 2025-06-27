@@ -7,7 +7,8 @@ import {
 } from '@nestjs/common';
 
 import { AuthService } from 'auth/auth.service';
-import { AuthLogInDTO, AuthRegisterDTO } from 'auth/dto/auth.dto';
+import { AuthLogInDTO } from 'auth/dto/auth-log-in.dto';
+import { AuthRegisterDTO } from 'auth/dto/auth-register.dto';
 import { IAuthResponse } from 'auth/types/auth.response';
 
 @Controller('auth')
