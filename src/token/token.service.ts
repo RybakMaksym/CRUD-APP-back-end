@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
@@ -33,7 +33,6 @@ export class TokenService {
         secret: this.configService.get<string>('REFRESH_TOKEN_SECRET'),
       },
     );
-    if (!result?.id) throw new UnauthorizedException('Unauthorized');
 
     return result.id;
   }
