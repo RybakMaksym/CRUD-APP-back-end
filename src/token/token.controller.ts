@@ -6,16 +6,16 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { ITokens } from 'token/types/tokens';
 
 import { RefreshTokenGuard } from 'auth/guards/refresh-token.guard';
 import { TokenService } from 'token/token.service';
+import { ITokens } from 'token/types/tokens';
 
 @Controller('token')
 export class TokenController {
   constructor(private readonly tokenService: TokenService) {}
 
-  @Get('access-token')
+  @Get('refresh')
   @UseGuards(RefreshTokenGuard)
   public async getNewToken(@Req() req: Request): Promise<ITokens> {
     const refreshToken = req.headers.authorization?.split(' ')[1];
