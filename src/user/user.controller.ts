@@ -8,7 +8,7 @@ import { UserService } from 'user/user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get()
+  @Get('list')
   @UseGuards(AccessTokenGuard)
   public async findAllUsers(): Promise<User[]> {
     return this.userService.findAll();
