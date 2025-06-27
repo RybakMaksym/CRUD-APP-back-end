@@ -5,7 +5,20 @@ import { Role } from 'user/types/role';
 
 export type UserDocument = User & Document;
 
-@Schema()
+@Schema({
+  timestamps: true,
+  toJSON: {
+    transform: (_, ret) => {
+      delete ret.passwordHash;
+      delete ret.refreshToken;
+      delete ret.createdAt;
+      delete ret.updatedAt;
+      delete ret.__v;
+
+      return ret;
+    },
+  },
+})
 export class User extends Document {
   @Prop({ required: true, unique: true, lowercase: true })
   email: string;
