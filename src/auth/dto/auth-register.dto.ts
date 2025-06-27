@@ -7,10 +7,10 @@ import {
   Matches,
 } from 'class-validator';
 
-import { AuthLogInDTO } from 'auth/dto/auth-log-in.dto';
+import { LogInUserDTO } from 'auth/dto/auth-log-in.dto';
 import { Role } from 'user/types/role';
 
-export class AuthRegisterDTO extends PartialType(AuthLogInDTO) {
+export class RegisterUserDTO extends PartialType(LogInUserDTO) {
   @IsNotEmpty()
   @IsString()
   public username: string;

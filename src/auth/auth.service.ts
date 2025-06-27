@@ -4,8 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { AuthLogInDTO } from 'auth/dto/auth-log-in.dto';
-import { AuthRegisterDTO } from 'auth/dto/auth-register.dto';
+import { LogInUserDTO } from 'auth/dto/auth-log-in.dto';
+import { RegisterUserDTO } from 'auth/dto/auth-register.dto';
 import { IAuthResponse } from 'auth/types/auth.response';
 import { compareHash } from 'helpers/hash';
 import { TokenService } from 'token/token.service';
@@ -19,7 +19,7 @@ export class AuthService {
     private readonly tokenService: TokenService,
   ) {}
 
-  private async validateUserPassword(dto: AuthLogInDTO): Promise<User> {
+  private async validateUserPassword(dto: LogInUserDTO): Promise<User> {
     const user = await this.userService.findByEmail(dto.email);
 
     if (!user) throw new NotFoundException('User not found');
@@ -31,7 +31,7 @@ export class AuthService {
     return user;
   }
 
-  public async registerUser(dto: AuthRegisterDTO): Promise<IAuthResponse> {
+  public async registerUser(dto: RegisterUserDTO): Promise<IAuthResponse> {
     const oldUser = await this.userService.findByEmail(dto.email);
 
     if (oldUser) throw new BadRequestException('User already exists');
@@ -51,7 +51,7 @@ export class AuthService {
     };
   }
 
-  public async logInUser(dto: AuthLogInDTO): Promise<IAuthResponse> {
+  public async logInUser(dto: LogInUserDTO): Promise<IAuthResponse> {
     const user = await this.validateUserPassword(dto);
     const tokens = this.tokenService.generateJwtTokens(user.id);
     await this.tokenService.saveTokenToDb(user.id, tokens.refreshToken);

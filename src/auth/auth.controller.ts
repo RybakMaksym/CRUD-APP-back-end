@@ -7,8 +7,8 @@ import {
 } from '@nestjs/common';
 
 import { AuthService } from 'auth/auth.service';
-import { AuthLogInDTO } from 'auth/dto/auth-log-in.dto';
-import { AuthRegisterDTO } from 'auth/dto/auth-register.dto';
+import { LogInUserDTO } from 'auth/dto/auth-log-in.dto';
+import { RegisterUserDTO } from 'auth/dto/auth-register.dto';
 import { IAuthResponse } from 'auth/types/auth.response';
 
 @Controller('auth')
@@ -17,13 +17,13 @@ export class AuthController {
 
   @UsePipes(new ValidationPipe())
   @Post('register')
-  public async register(@Body() dto: AuthRegisterDTO): Promise<IAuthResponse> {
+  public async register(@Body() dto: RegisterUserDTO): Promise<IAuthResponse> {
     return this.authService.registerUser(dto);
   }
 
   @UsePipes(new ValidationPipe())
   @Post('log-in')
-  public async logIn(@Body() dto: AuthLogInDTO): Promise<IAuthResponse> {
+  public async logIn(@Body() dto: LogInUserDTO): Promise<IAuthResponse> {
     return this.authService.logInUser(dto);
   }
 }
