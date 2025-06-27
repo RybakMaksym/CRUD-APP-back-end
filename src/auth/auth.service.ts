@@ -6,7 +6,7 @@ import {
 
 import { AuthLogInDTO, AuthRegisterDTO } from 'auth/dto/auth.dto';
 import { IAuthResponse } from 'auth/types/auth.response';
-import { comparePasswords } from 'helpers/comparePasswords';
+import { comparePasswords } from 'helpers/password';
 import { TokenService } from 'token/token.service';
 import { User } from 'user/entities/user.entity';
 import { UserService } from 'user/user.service';

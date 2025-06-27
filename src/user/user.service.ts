@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 import { AuthRegisterDTO } from 'auth/dto/auth.dto';
-import { hashPassword } from 'helpers/hashPassword';
+import { hashPassword } from 'helpers/password';
 import { User, UserDocument } from 'user/entities/user.entity';
 
 @Injectable()
