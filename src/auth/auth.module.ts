@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 
 import { AuthController } from 'auth/auth.controller';
 import { AuthService } from 'auth/auth.service';
-import { AccessTokenStrategy } from 'auth/strategies/access-token-stategy';
+import { AccessTokenStrategy } from 'auth/strategies/access-token-strategy';
 import { RefreshTokenStrategy } from 'auth/strategies/refresh-token-strategy';
 import { TokenModule } from 'token/token.module';
 import { UserModule } from 'user/user.module';
