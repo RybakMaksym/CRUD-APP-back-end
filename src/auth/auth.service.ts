@@ -6,7 +6,7 @@ import {
 
 import { AuthLogInDTO, AuthRegisterDTO } from 'auth/dto/auth.dto';
 import { IAuthResponse } from 'auth/types/auth.response';
-import { comparePasswords } from 'helpers/password';
+import { compareHash } from 'helpers/hash';
 import { TokenService } from 'token/token.service';
 import { User } from 'user/models/user.model';
 import { UserService } from 'user/user.service';
@@ -23,10 +23,7 @@ export class AuthService {
 
     if (!user) throw new NotFoundException('User not found');
 
-    const isPasswordValid = await comparePasswords(
-      dto.password,
-      user.passwordHash,
-    );
+    const isPasswordValid = await compareHash(dto.password, user.passwordHash);
 
     if (!isPasswordValid) throw new BadRequestException('Invalid password');
 

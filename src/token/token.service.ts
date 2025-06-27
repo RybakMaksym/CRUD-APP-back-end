@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
-import { comparePasswords, hashPassword } from 'helpers/password';
+import { compareHash, hash } from 'helpers/hash';
 import { ITokens } from 'token/types/tokens';
 import { UserService } from 'user/user.service';
 
@@ -31,7 +31,7 @@ export class TokenService {
 
   public async saveTokenToDb(userId: string, refreshToken: string) {
     await this.userService.update(userId, {
-      refreshToken: hashPassword(refreshToken),
+      refreshToken: hash(refreshToken),
     });
   }
 
@@ -45,7 +45,7 @@ export class TokenService {
 
     const user = await this.userService.findById(id);
 
-    if (!id || comparePasswords(user.refreshToken, refreshToken)) {
+    if (!id || compareHash(user.refreshToken, refreshToken)) {
       throw new UnauthorizedException('Unauthorized');
     }
 

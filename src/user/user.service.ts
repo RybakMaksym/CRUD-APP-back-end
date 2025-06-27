@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, UpdateQuery } from 'mongoose';
 
 import { AuthRegisterDTO } from 'auth/dto/auth.dto';
-import { hashPassword } from 'helpers/password';
+import { hash } from 'helpers/hash';
 import { User, UserDocument } from 'user/models/user.model';
 
 @Injectable()
@@ -15,7 +15,7 @@ export class UserService {
   public async create(dto: AuthRegisterDTO): Promise<User> {
     return this.userModel.create({
       ...dto,
-      passwordHash: await hashPassword(dto.password),
+      passwordHash: await hash(dto.password),
     });
   }
 
