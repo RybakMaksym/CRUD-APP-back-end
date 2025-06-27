@@ -1,8 +1,8 @@
 import {
+  BadGatewayException,
   Controller,
   Get,
   Req,
-  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
@@ -21,10 +21,11 @@ export class TokenController {
     const refreshToken = req.headers.authorization?.split(' ')[1];
 
     if (!refreshToken) {
-      throw new UnauthorizedException('Unauthorized');
+      throw new BadGatewayException('Unauthorized');
     }
 
     const userId = await this.tokenService.verifyToken(refreshToken);
+
     return this.tokenService.generateJwtTokens(userId);
   }
 }
