@@ -4,8 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { LogInUserDTO } from 'auth/dto/auth-log-in.dto';
-import { RegisterUserDTO } from 'auth/dto/auth-register.dto';
+import { CreateUserDTO } from 'auth/dto/create-user.dto';
+import { LogInUserDTO } from 'auth/dto/log-in-user.dto';
 import { IAuthResponse } from 'auth/types/auth.response';
 import { compareHash } from 'helpers/hash';
 import { TokenService } from 'token/token.service';
@@ -31,7 +31,7 @@ export class AuthService {
     return user;
   }
 
-  public async registerUser(dto: RegisterUserDTO): Promise<IAuthResponse> {
+  public async registerUser(dto: CreateUserDTO): Promise<IAuthResponse> {
     const oldUser = await this.userService.findByEmail(dto.email);
 
     if (oldUser) throw new BadRequestException('User already exists');
