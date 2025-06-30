@@ -16,7 +16,7 @@ export class UserService {
   public async create(dto: CreateUserDTO): Promise<User> {
     return this.userModel.create({
       ...dto,
-      passwordHash: await hash(dto.password),
+      passwordHash: hash(dto.password),
       role: dto.isAdmin ? Role.Admin : Role.User,
     });
   }

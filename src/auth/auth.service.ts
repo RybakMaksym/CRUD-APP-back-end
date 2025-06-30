@@ -24,7 +24,7 @@ export class AuthService {
 
     if (!user) throw new NotFoundException('User not found');
 
-    const isPasswordValid = await compareHash(dto.password, user.passwordHash);
+    const isPasswordValid = compareHash(dto.password, user.passwordHash);
 
     if (!isPasswordValid) throw new BadRequestException('Invalid password');
 
