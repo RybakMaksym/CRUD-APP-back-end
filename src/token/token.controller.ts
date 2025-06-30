@@ -2,10 +2,9 @@ import {
   BadGatewayException,
   Controller,
   Get,
-  Req,
+  Headers,
   UseGuards,
 } from '@nestjs/common';
-import { Request } from 'express';
 
 import { RefreshTokenGuard } from 'auth/guards/refresh-token.guard';
 import { TokenService } from 'token/token.service';
@@ -17,8 +16,10 @@ export class TokenController {
 
   @Get('refresh')
   @UseGuards(RefreshTokenGuard)
-  public async getNewToken(@Req() req: Request): Promise<ITokens> {
-    const refreshToken = req.headers.authorization?.split(' ')[1];
+  public async getNewToken(
+    @Headers('authorization') authorization?: string,
+  ): Promise<ITokens> {
+    const refreshToken = authorization?.split(' ')[1];
 
     if (!refreshToken) {
       throw new BadGatewayException('Unauthorized');
