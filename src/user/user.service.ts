@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, UpdateQuery } from 'mongoose';
 
 import { CreateUserDTO } from 'auth/dto/create-user.dto';
+import { Role } from 'enums/role.enum';
 import { hash } from 'helpers/hash';
 import { User, UserDocument } from 'user/models/user.model';
 
@@ -16,7 +17,7 @@ export class UserService {
     return this.userModel.create({
       ...dto,
       passwordHash: await hash(dto.password),
-      role: dto.isAdmin ? 'admin' : 'user',
+      role: dto.isAdmin ? Role.Admin : Role.User,
     });
   }
 
