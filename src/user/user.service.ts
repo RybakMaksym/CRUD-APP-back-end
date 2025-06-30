@@ -16,6 +16,7 @@ export class UserService {
     return this.userModel.create({
       ...dto,
       passwordHash: await hash(dto.password),
+      role: dto.isAdmin ? 'admin' : 'user',
     });
   }
 
