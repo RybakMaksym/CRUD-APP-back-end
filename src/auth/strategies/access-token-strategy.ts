@@ -23,7 +23,7 @@ export class AccessTokenStrategy extends PassportStrategy(
     });
   }
 
-  public async validate(payload: JwtPayload): JwtReValidateResult {
+  public validate(payload: JwtPayload): JwtReValidateResult {
     return { userId: payload.id };
   }
 }

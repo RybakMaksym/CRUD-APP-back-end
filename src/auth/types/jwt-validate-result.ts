@@ -1,3 +1,3 @@
-export type JwtReValidateResult = Promise<{
+export type JwtReValidateResult = {
   userId: string;
-}>;
+};
