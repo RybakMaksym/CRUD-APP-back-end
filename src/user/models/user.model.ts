@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 import { Role } from 'enums/role.enum';
+import { IUser } from 'user/types/user';
 
 export type UserDocument = User & Document;
 
@@ -19,15 +20,15 @@ export type UserDocument = User & Document;
     },
   },
 })
-export class User extends Document {
+export class User extends Document implements IUser {
   @Prop({ required: true, unique: true, lowercase: true })
   public email: string;
 
   @Prop({ required: true })
-  public passwordHash: string;
+  public username: string;
 
   @Prop({ required: true })
-  public username: string;
+  public passwordHash: string;
 
   @Prop({ default: 'user' })
   public role: Role;

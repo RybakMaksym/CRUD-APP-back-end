@@ -9,7 +9,7 @@ import { LogInUserDTO } from 'auth/dto/log-in-user.dto';
 import { IAuthResponse } from 'auth/types/auth.response';
 import { compareHash } from 'helpers/hash';
 import { TokenService } from 'token/token.service';
-import { User } from 'user/models/user.model';
+import { IUser } from 'user/types/user';
 import { UserService } from 'user/user.service';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class AuthService {
     private readonly tokenService: TokenService,
   ) {}
 
-  private async validateUserPassword(dto: LogInUserDTO): Promise<User> {
+  private async validateUserPassword(dto: LogInUserDTO): Promise<IUser> {
     const user = await this.userService.findByEmail(dto.email);
 
     if (!user) throw new NotFoundException('User not found');

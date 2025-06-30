@@ -1,7 +1,7 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 
 import { AccessTokenGuard } from 'auth/guards/access-token.guard';
-import { User } from 'user/models/user.model';
+import { IUser } from 'user/types/user';
 import { UserService } from 'user/user.service';
 
 @Controller('user')
@@ -10,7 +10,7 @@ export class UserController {
 
   @Get('list')
   @UseGuards(AccessTokenGuard)
-  public async findAllUsers(): Promise<User[]> {
+  public async findAllUsers(): Promise<IUser[]> {
     return this.userService.findAll();
   }
 }
