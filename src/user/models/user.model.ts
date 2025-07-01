@@ -30,7 +30,7 @@ export class User extends Document implements IUser {
   @Prop({ required: true })
   public passwordHash: string;
 
-  @Prop({ default: 'user' })
+  @Prop({ enum: Role, default: Role.User })
   public role: Role;
 
   @Prop()
