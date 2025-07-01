@@ -45,5 +45,25 @@ module.exports = {
         },
       },
     ],
+    'no-restricted-imports': [
+      'error',
+      {
+        paths: [
+          {
+            name: '..',
+            message: 'Use absolute imports instead of relative paths.',
+          },
+          {
+            name: '.',
+            message: 'Use absolute imports instead of relative paths.',
+          },
+        ],
+        patterns: ['../*', './*'],
+      },
+    ],
+    'padding-line-between-statements': [
+      'error',
+      { blankLine: 'always', prev: '*', next: 'return' }
+    ],
   },
 };
