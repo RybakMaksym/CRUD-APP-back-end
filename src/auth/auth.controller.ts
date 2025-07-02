@@ -1,9 +1,10 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 
 import { AuthService } from 'auth/auth.service';
 import { CurrentUserId } from 'auth/decorators/current-user-id.decorator';
 import { CreateUserDTO } from 'auth/dto/create-user.dto';
 import { LogInUserDTO } from 'auth/dto/log-in-user.dto';
+import { RefreshTokenGuard } from 'auth/guards/refresh-token.guard';
 import { IAuthResponse } from 'auth/types/auth.response';
 import { LogOutResponse } from 'auth/types/log-out.response';
 
@@ -22,6 +23,7 @@ export class AuthController {
   }
 
   @Post('log-out')
+  @UseGuards(RefreshTokenGuard)
   public async logOut(
     @CurrentUserId() userId: string,
   ): Promise<LogOutResponse> {
