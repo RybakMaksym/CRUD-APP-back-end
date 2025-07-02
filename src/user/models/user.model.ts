@@ -35,6 +35,9 @@ export class User extends Document implements IUser {
 
   @Prop()
   public refreshToken?: string;
+
+  @Prop()
+  public avatarUrl?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
