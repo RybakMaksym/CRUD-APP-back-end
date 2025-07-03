@@ -45,7 +45,11 @@ export class TokenService {
 
     const user = await this.userService.findById(id);
 
-    if (!id || compareHash(user.refreshToken, refreshToken)) {
+    if (
+      !id ||
+      !user.refreshToken ||
+      compareHash(user.refreshToken, refreshToken)
+    ) {
       throw new UnauthorizedException('Unauthorized');
     }
 
