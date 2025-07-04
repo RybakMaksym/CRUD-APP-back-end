@@ -6,7 +6,7 @@ import { LogInUserDTO } from 'auth/dto/log-in-user.dto';
 import { RefreshTokenGuard } from 'auth/guards/refresh-token.guard';
 import { IAuthResponse } from 'auth/types/auth.response';
 import { TokenService } from 'token/token.service';
-import { IMessageReponse } from 'types/iMessageResponse.interface';
+import { IMessageReponse } from 'types/message.interfaces';
 
 @Controller('auth')
 export class AuthController {
