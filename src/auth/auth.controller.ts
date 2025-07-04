@@ -6,7 +6,7 @@ import { LogInUserDTO } from 'auth/dto/log-in-user.dto';
 import { RefreshTokenGuard } from 'auth/guards/refresh-token.guard';
 import { IAuthResponse } from 'auth/types/auth.response';
 import { TokenService } from 'token/token.service';
-import { ISimpleMessage } from 'types/ISimpleMessage';
+import { IMessageReponse } from 'types/iMessageResponse.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -29,7 +29,7 @@ export class AuthController {
   @UseGuards(RefreshTokenGuard)
   public async logOut(
     @Headers('authorization') authorization?: string,
-  ): Promise<ISimpleMessage> {
+  ): Promise<IMessageReponse> {
     const refreshToken = authorization?.split(' ')[1];
 
     const userId = await this.tokenService.verifyToken(refreshToken);
