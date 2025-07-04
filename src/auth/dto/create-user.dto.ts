@@ -18,7 +18,7 @@ export class CreateUserDTO extends PartialType(LogInUserDTO) {
 
   @IsOptional()
   @IsBoolean()
-  @Transform(({ value }) => Boolean(value))
+  @Transform(({ value }) => value === 'true' || value === true)
   public isAdmin?: boolean;
 
   @IsOptional()
