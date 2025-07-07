@@ -29,6 +29,10 @@ export class UserService {
     await this.userModel.updateOne({ _id: id }, update).exec();
   }
 
+  public async delete(id: string): Promise<void> {
+    await this.userModel.deleteOne({ _id: id }).exec();
+  }
+
   public async findByEmail(email: string): Promise<IUser | null> {
     return this.userModel.findOne({ email }).exec();
   }

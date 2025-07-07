@@ -1,5 +1,6 @@
 import {
   Controller,
+  Delete,
   ForbiddenException,
   Get,
   Param,
@@ -9,6 +10,7 @@ import {
 import { AccessTokenGuard } from 'auth/guards/access-token.guard';
 import { GetUserId } from 'decorators/get-user-id.decorator';
 import { Role } from 'enums/role.enum';
+import { IMessageReponse } from 'types/iMessageResponse.interface';
 import { IUser } from 'user/types/user';
 import { UserService } from 'user/user.service';
 
@@ -47,5 +49,15 @@ export class UserController {
   @UseGuards(AccessTokenGuard)
   public async findMeById(@GetUserId() userId: string): Promise<IUser> {
     return this.userService.findById(userId);
+  }
+
+  @Delete(':id')
+  @UseGuards(AccessTokenGuard)
+  public async deleteUserById(
+    @Param('id') userId: string,
+  ): Promise<IMessageReponse> {
+    await this.userService.delete(userId);
+
+    return { message: 'User deleted successfuly' };
   }
 }
