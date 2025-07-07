@@ -28,11 +28,11 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @Get('user/:id')
+  @Get(':id')
   @UseGuards(AccessTokenGuard)
   public async findUserById(
     @GetUserId() myId: string,
-    @Param(':id') userId: string,
+    @Param('id') userId: string,
   ): Promise<IUser> {
     const user = await this.userService.findById(myId);
 
