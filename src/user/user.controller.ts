@@ -1,4 +1,10 @@
-import { Controller, ForbiddenException, Get, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  ForbiddenException,
+  Get,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
 
 import { AccessTokenGuard } from 'auth/guards/access-token.guard';
 import { GetUserId } from 'decorators/get-user-id.decorator';
@@ -22,9 +28,24 @@ export class UserController {
     return this.userService.findAll();
   }
 
+  @Get('user/:id')
+  @UseGuards(AccessTokenGuard)
+  public async findUserById(
+    @GetUserId() myId: string,
+    @Param(':id') userId: string,
+  ): Promise<IUser> {
+    const user = await this.userService.findById(myId);
+
+    if (user.role !== Role.Admin) {
+      throw new ForbiddenException('You do not have access to this resource');
+    }
+
+    return this.userService.findById(userId);
+  }
+
   @Get('me')
   @UseGuards(AccessTokenGuard)
-  public async findUserById(@GetUserId() userId: string): Promise<IUser> {
+  public async findMeById(@GetUserId() userId: string): Promise<IUser> {
     return this.userService.findById(userId);
   }
 }
