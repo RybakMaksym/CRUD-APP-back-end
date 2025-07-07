@@ -1,18 +1,19 @@
 import { BadRequestException } from '@nestjs/common';
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface';
 
+import {
+  AVATAR_ALLOWED_FILE_TYPES,
+  AVATAR_IMAGE_SIZE,
+} from 'constants/file.constants';
+
 export const AVATAR_VALIDATION_OPTIONS: MulterOptions = {
   limits: {
-    fileSize: 2 * 1024 * 1024,
+    fileSize: AVATAR_IMAGE_SIZE,
   },
   fileFilter: (_req, file, cb) => {
-    const isImage =
-      file.mimetype === 'image/jpeg' ||
-      file.mimetype === 'image/png' ||
-      file.mimetype === 'image/webp' ||
-      file.mimetype === 'image/gif';
+    const isImageTypeValid = AVATAR_ALLOWED_FILE_TYPES.includes(file.mimetype);
 
-    if (!isImage) {
+    if (!isImageTypeValid) {
       return cb(
         new BadRequestException(
           'Only image files are allowed (jpeg, png, webp, gif)',
