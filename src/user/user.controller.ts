@@ -10,7 +10,7 @@ import {
 import { AccessTokenGuard } from 'auth/guards/access-token.guard';
 import { GetUserId } from 'decorators/get-user-id.decorator';
 import { Role } from 'enums/role.enum';
-import { IMessageReponse } from 'types/iMessageResponse.interface';
+import { IMessageReponse } from 'types/message.interfaces';
 import { IUser } from 'user/types/user';
 import { UserService } from 'user/user.service';
 
@@ -45,7 +45,7 @@ export class UserController {
     return this.userService.findById(userId);
   }
 
-  @Get('me')
+  @Get('profile')
   @UseGuards(AccessTokenGuard)
   public async findMeById(@GetUserId() userId: string): Promise<IUser> {
     return this.userService.findById(userId);
@@ -54,8 +54,15 @@ export class UserController {
   @Delete(':id')
   @UseGuards(AccessTokenGuard)
   public async deleteUserById(
+    @GetUserId() myId: string,
     @Param('id') userId: string,
   ): Promise<IMessageReponse> {
+    const user = await this.userService.findById(myId);
+
+    if (user.role !== Role.Admin) {
+      throw new ForbiddenException('You do not have access to this resource');
+    }
+
     await this.userService.delete(userId);
 
     return { message: 'User deleted successfuly' };

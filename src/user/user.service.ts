@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, UpdateQuery } from 'mongoose';
 
@@ -30,7 +34,17 @@ export class UserService {
   }
 
   public async delete(id: string): Promise<void> {
-    await this.userModel.deleteOne({ _id: id }).exec();
+    const user = await this.userModel.findById(id);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    try {
+      await this.userModel.findByIdAndDelete(id);
+    } catch {
+      throw new InternalServerErrorException('Failed to delete user');
+    }
   }
 
   public async findByEmail(email: string): Promise<IUser | null> {

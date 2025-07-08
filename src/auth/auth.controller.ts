@@ -11,7 +11,7 @@ import { AuthService } from 'auth/auth.service';
 import { CreateUserDTO } from 'auth/dto/create-user.dto';
 import { LogInUserDTO } from 'auth/dto/log-in-user.dto';
 import { IAuthResponse } from 'auth/types/auth.response';
-import { AVATAR_VALIDATION_OPTIONS } from 'constants/avatar-validation-options';
+import { AVATAR_VALIDATION_OPTIONS } from 'constants/avatar-validation-options.constants';
 import { FileUploadService } from 'file-upload/file-upload.service';
 
 @Controller('auth')
