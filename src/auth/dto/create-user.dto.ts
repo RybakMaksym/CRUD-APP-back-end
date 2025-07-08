@@ -1,4 +1,3 @@
-import { PartialType } from '@nestjs/mapped-types';
 import { Transform } from 'class-transformer';
 import {
   IsBoolean,
@@ -10,7 +9,7 @@ import {
 
 import { LogInUserDTO } from 'auth/dto/log-in-user.dto';
 
-export class CreateUserDTO extends PartialType(LogInUserDTO) {
+export class CreateUserDTO extends LogInUserDTO {
   @IsNotEmpty()
   @IsString()
   @Transform(({ value }) => value?.trim())

@@ -1,22 +1,35 @@
 import {
+  BadRequestException,
+  Body,
   Controller,
   Delete,
   ForbiddenException,
   Get,
+  NotFoundException,
   Param,
+  Patch,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 import { AccessTokenGuard } from 'auth/guards/access-token.guard';
+import { AVATAR_VALIDATION_OPTIONS } from 'constants/avatar-validation-options.constants';
 import { GetUserId } from 'decorators/get-user-id.decorator';
 import { Role } from 'enums/role.enum';
+import { FileUploadService } from 'file-upload/file-upload.service';
 import { IMessageReponse } from 'types/message.interfaces';
+import { UpdateUserDTO } from 'user/dto/update-user.dto';
 import { IUser } from 'user/types/user';
 import { UserService } from 'user/user.service';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly fileUploadService: FileUploadService,
+  ) {}
 
   @Get('list')
   @UseGuards(AccessTokenGuard)
@@ -49,6 +62,54 @@ export class UserController {
   @UseGuards(AccessTokenGuard)
   public async findMeById(@GetUserId() userId: string): Promise<IUser> {
     return this.userService.findById(userId);
+  }
+
+  @Patch('/update/:id')
+  @UseGuards(AccessTokenGuard)
+  @UseInterceptors(FileInterceptor('avatar', AVATAR_VALIDATION_OPTIONS))
+  public async updateUserById(
+    @GetUserId() myId: string,
+    @Param('id') userId: string,
+    @Body() dto: UpdateUserDTO,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<IMessageReponse> {
+    const userAdmin = await this.userService.findById(myId);
+
+    if (userAdmin.role !== Role.Admin) {
+      throw new ForbiddenException('You do not have access to this resource');
+    }
+
+    const user = await this.userService.findById(userId);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (dto.email && (await this.userService.findByEmail(dto.email))) {
+      throw new BadRequestException('This email already taken');
+    }
+
+    const role =
+      dto.isAdmin === undefined
+        ? user.role
+        : dto.isAdmin
+          ? Role.Admin
+          : Role.User;
+
+    let avatarUrl: string | undefined;
+
+    if (file) {
+      avatarUrl = await this.fileUploadService.uploadImage(file);
+    }
+
+    await this.userService.update(userId, {
+      username: dto.username ?? user.username,
+      email: dto.email ?? user.email,
+      role,
+      avatarUrl: avatarUrl ?? user.avatarUrl,
+    });
+
+    return { message: 'User updated successfuly' };
   }
 
   @Delete(':id')

@@ -30,7 +30,11 @@ export class UserService {
     id: string,
     update: UpdateQuery<UserDocument>,
   ): Promise<void> {
-    await this.userModel.updateOne({ _id: id }, update).exec();
+    try {
+      await this.userModel.updateOne({ _id: id }, update).exec();
+    } catch {
+      throw new InternalServerErrorException('Failed to delete user');
+    }
   }
 
   public async delete(id: string): Promise<void> {
