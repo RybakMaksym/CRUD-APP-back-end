@@ -73,4 +73,14 @@ export class UserService {
 
     return users.length > 0;
   }
+
+  public async searchUsers(query: string): Promise<IUser[]> {
+    if (!query) return this.findAll();
+
+    const regex = new RegExp(query, 'i');
+
+    return this.userModel.find({
+      $or: [{ email: regex }, { username: regex }],
+    });
+  }
 }

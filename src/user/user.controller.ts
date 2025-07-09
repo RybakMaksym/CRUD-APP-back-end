@@ -8,6 +8,7 @@ import {
   NotFoundException,
   Param,
   Patch,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -41,6 +42,21 @@ export class UserController {
     }
 
     return this.userService.findAll();
+  }
+
+  @Get('search')
+  @UseGuards(AccessTokenGuard)
+  public async searchUsers(
+    @GetUserId() userId: string,
+    @Query('query') query: string,
+  ): Promise<IUser[]> {
+    const user = await this.userService.findById(userId);
+
+    if (user.role !== Role.Admin) {
+      throw new ForbiddenException('You do not have access to this resource');
+    }
+
+    return this.userService.searchUsers(query);
   }
 
   @Get(':id')
