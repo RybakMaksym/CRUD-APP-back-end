@@ -62,4 +62,15 @@ export class UserService {
   public async findAll(): Promise<IUser[]> {
     return this.userModel.find().exec();
   }
+
+  public async isEmailTaken(userId: string, email: string): Promise<boolean> {
+    const users = await this.userModel
+      .find({
+        email,
+        _id: { $ne: userId },
+      })
+      .exec();
+
+    return users.length > 0;
+  }
 }

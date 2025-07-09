@@ -71,11 +71,11 @@ export class UserController {
     @GetUserId() myId: string,
     @Param('id') userId: string,
     @Body() dto: UpdateUserDTO,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile() file?: Express.Multer.File,
   ): Promise<IMessageReponse> {
-    const userAdmin = await this.userService.findById(myId);
+    const admin = await this.userService.findById(myId);
 
-    if (userAdmin.role !== Role.Admin) {
+    if (admin.role !== Role.Admin) {
       throw new ForbiddenException('You do not have access to this resource');
     }
 
@@ -85,28 +85,26 @@ export class UserController {
       throw new NotFoundException('User not found');
     }
 
-    if (dto.email && (await this.userService.findByEmail(dto.email))) {
+    if (dto.email && (await this.userService.isEmailTaken(userId, dto.email))) {
       throw new BadRequestException('This email already taken');
     }
 
     const role =
-      dto.isAdmin === undefined
-        ? user.role
-        : dto.isAdmin
+      dto.isAdmin !== undefined
+        ? dto.isAdmin
           ? Role.Admin
-          : Role.User;
+          : Role.User
+        : user.role;
 
-    let avatarUrl: string | undefined;
-
-    if (file) {
-      avatarUrl = await this.fileUploadService.uploadImage(file);
-    }
+    const avatarUrl = file
+      ? await this.fileUploadService.uploadImage(file)
+      : user.avatarUrl;
 
     await this.userService.update(userId, {
       username: dto.username ?? user.username,
       email: dto.email ?? user.email,
       role,
-      avatarUrl: avatarUrl ?? user.avatarUrl,
+      avatarUrl,
     });
 
     return { message: 'User updated successfuly' };
