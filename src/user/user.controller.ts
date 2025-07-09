@@ -59,6 +59,12 @@ export class UserController {
     return this.userService.searchUsers(query);
   }
 
+  @Get('profile')
+  @UseGuards(AccessTokenGuard)
+  public async findMeById(@GetUserId() userId: string): Promise<IUser> {
+    return this.userService.findById(userId);
+  }
+
   @Get(':id')
   @UseGuards(AccessTokenGuard)
   public async findUserById(
@@ -71,12 +77,6 @@ export class UserController {
       throw new ForbiddenException('You do not have access to this resource');
     }
 
-    return this.userService.findById(userId);
-  }
-
-  @Get('profile')
-  @UseGuards(AccessTokenGuard)
-  public async findMeById(@GetUserId() userId: string): Promise<IUser> {
     return this.userService.findById(userId);
   }
 
