@@ -1,12 +1,13 @@
 import {
   Body,
   Controller,
+  Headers,
   Post,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Body, Controller, Headers, Post, UseGuards } from '@nestjs/common';
 
 import { AuthService } from 'auth/auth.service';
 import { CreateUserDTO } from 'auth/dto/create-user.dto';
@@ -60,7 +61,7 @@ export class AuthController {
     await this.authService.logOutUser(userId);
 
     return {
-      message: 'Log out successfully',
+      message: 'Logged out successfully',
     };
   }
 }
