@@ -29,9 +29,9 @@ export class UserService {
   public async update(
     id: string,
     update: UpdateQuery<UserDocument>,
-  ): Promise<void> {
+  ): Promise<IUser> {
     try {
-      await this.userModel.updateOne({ _id: id }, update).exec();
+      return this.userModel.findByIdAndUpdate(id, update, { new: true }).exec();
     } catch {
       throw new InternalServerErrorException('Failed to delete user');
     }

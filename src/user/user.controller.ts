@@ -105,7 +105,7 @@ export class UserController {
     @Param('id') userId: string,
     @Body() dto: UpdateUserDTO,
     @UploadedFile() file?: Express.Multer.File,
-  ): Promise<IMessageReponse> {
+  ): Promise<IUser> {
     const admin = await this.userService.findById(myId);
 
     if (admin.role !== Role.Admin) {
@@ -135,14 +135,12 @@ export class UserController {
       ? await this.fileUploadService.uploadImage(file)
       : user.avatarUrl;
 
-    await this.userService.update(userId, {
+    return this.userService.update(userId, {
       username: dto.username ?? user.username,
       email: dto.email ?? user.email,
       role,
       avatarUrl,
     });
-
-    return { message: 'User updated successfuly' };
   }
 
   @Delete(':id')
