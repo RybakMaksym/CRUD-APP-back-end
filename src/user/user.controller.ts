@@ -101,7 +101,9 @@ export class UserController {
       throw new NotFoundException('User not found');
     }
 
-    if (dto.email && (await this.userService.isEmailTaken(userId, dto.email))) {
+    const isEmailTaken = await this.userService.isEmailTaken(userId, dto.email);
+
+    if (dto.email && isEmailTaken) {
       throw new BadRequestException('This email already taken');
     }
 
