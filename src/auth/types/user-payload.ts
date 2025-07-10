@@ -5,4 +5,5 @@ export interface IUserPayload {
   email: string;
   username: string;
   role: Role;
+  avatarUrl: string;
 }

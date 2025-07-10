@@ -7,4 +7,5 @@ export type IUser = {
   passwordHash: string;
   role: Role;
   refreshToken?: string;
+  avatarUrl?: string;
 };
