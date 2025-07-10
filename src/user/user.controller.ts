@@ -17,6 +17,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 
 import { AccessTokenGuard } from 'auth/guards/access-token.guard';
 import { AVATAR_VALIDATION_OPTIONS } from 'constants/avatar-validation-options.constants';
+import { DEFAULT_USERS_PAGE_LIMIT } from 'constants/user.constants';
 import { GetUserId } from 'decorators/get-user-id.decorator';
 import { Role } from 'enums/role.enum';
 import { FileUploadService } from 'file-upload/file-upload.service';
@@ -32,16 +33,32 @@ export class UserController {
     private readonly fileUploadService: FileUploadService,
   ) {}
 
-  @Get('list')
+  @Get('total')
   @UseGuards(AccessTokenGuard)
-  public async findAllUsers(@GetUserId() userId: string): Promise<IUser[]> {
+  public async getTotalUsers(@GetUserId() userId: string): Promise<number> {
     const user = await this.userService.findById(userId);
 
     if (user.role !== Role.Admin) {
       throw new ForbiddenException('You do not have access to this resource');
     }
 
-    return this.userService.findAll();
+    return this.userService.getTotalUsers();
+  }
+
+  @Get('list')
+  @UseGuards(AccessTokenGuard)
+  public async findAllUsers(
+    @GetUserId() userId: string,
+    @Query('page') page = 1,
+    @Query('limit') limit = DEFAULT_USERS_PAGE_LIMIT,
+  ): Promise<IUser[]> {
+    const user = await this.userService.findById(userId);
+
+    if (user.role !== Role.Admin) {
+      throw new ForbiddenException('You do not have access to this resource');
+    }
+
+    return this.userService.findAllWithPagination(+page, +limit);
   }
 
   @Get('search')

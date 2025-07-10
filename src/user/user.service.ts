@@ -83,4 +83,17 @@ export class UserService {
       $or: [{ email: regex }, { username: regex }],
     });
   }
+
+  public async getTotalUsers(): Promise<number> {
+    return this.userModel.countDocuments().exec();
+  }
+
+  public async findAllWithPagination(
+    page: number,
+    limit: number,
+  ): Promise<IUser[]> {
+    const skip = (page - 1) * limit;
+
+    return this.userModel.find().skip(skip).limit(limit).exec();
+  }
 }
