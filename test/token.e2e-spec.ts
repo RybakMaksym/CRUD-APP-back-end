@@ -6,13 +6,14 @@ import * as request from 'supertest';
 
 import { AppModule } from 'app/app.module';
 
-describe('AuthController (e2e)', () => {
+describe('TokenController (e2e)', () => {
   let app: INestApplication;
   let server: any;
   let dbConnection: Connection;
 
   beforeEach(async () => {
-    process.env.DB_CONNECTION_URI = 'mongodb://localhost:27017/crud-db-tests';
+    process.env.DB_CONNECTION_URI =
+      'mongodb://localhost:27017/crud-db-token-tests';
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],

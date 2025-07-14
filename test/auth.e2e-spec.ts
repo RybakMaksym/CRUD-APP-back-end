@@ -12,7 +12,8 @@ describe('AuthController (e2e)', () => {
   let dbConnection: Connection;
 
   beforeEach(async () => {
-    process.env.DB_CONNECTION_URI = 'mongodb://localhost:27017/crud-db-tests';
+    process.env.DB_CONNECTION_URI =
+      'mongodb://localhost:27017/crud-db-auth-tests';
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
