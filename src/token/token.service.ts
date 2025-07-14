@@ -48,7 +48,7 @@ export class TokenService {
     if (
       !id ||
       !user.refreshToken ||
-      compareHash(user.refreshToken, refreshToken)
+      !compareHash(refreshToken, user.refreshToken)
     ) {
       throw new UnauthorizedException('Unauthorized');
     }
