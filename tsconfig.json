@@ -18,17 +18,7 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "app/*": ["app/*"],
-      "auth/*": ["auth/*"],
-      "token/*": ["token/*"],
-      "file-upload/*": ["file-upload/*"],
-      "user/*": ["user/*"],
-      "config/*": ["config/*"],
-      "helpers/*": ["helpers/*"],
-      "enums/*": ["enums/*"],
-      "constants/*": ["constants/*"],
-      "decorators/*": ["decorators/*"],
-      "types/*": ["types/*"],
+      "@/*": ["*"]
     }
   },
   "include": ["src", "env.d.ts", "test"]

@@ -7,7 +7,7 @@ import {
   IsUrl,
 } from 'class-validator';
 
-import { LogInUserDTO } from 'auth/dto/log-in-user.dto';
+import { LogInUserDTO } from '@/auth/dto/log-in-user.dto';
 
 export class CreateUserDTO extends LogInUserDTO {
   @IsNotEmpty()

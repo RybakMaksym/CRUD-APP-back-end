@@ -4,7 +4,7 @@ import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer
 import {
   AVATAR_ALLOWED_FILE_TYPES,
   AVATAR_IMAGE_SIZE,
-} from 'constants/file.constants';
+} from '@/constants/file.constants';
 
 export const AVATAR_VALIDATION_OPTIONS: MulterOptions = {
   limits: {

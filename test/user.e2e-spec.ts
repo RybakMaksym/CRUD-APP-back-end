@@ -4,7 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Connection, disconnect } from 'mongoose';
 import * as request from 'supertest';
 
-import { AppModule } from 'app/app.module';
+import { AppModule } from '@/app/app.module';
 
 describe('UserController (e2e)', () => {
   let app: INestApplication;

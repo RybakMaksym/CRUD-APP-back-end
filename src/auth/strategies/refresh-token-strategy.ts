@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 
-import { JwtReValidateResult } from 'auth/types/jwt-validate-result';
+import { JwtReValidateResult } from '@/auth/types/jwt-validate-result';
 
 type JwtPayload = {
   id: string;

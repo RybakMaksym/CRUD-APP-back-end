@@ -7,16 +7,6 @@
     "^.+\\.(t|j)s$": "ts-jest"
   },
   "moduleNameMapper": {
-    "^app/(.*)$": "<rootDir>/../src/app/$1",
-    "^auth/(.*)$": "<rootDir>/../src/auth/$1",
-    "^token/(.*)$": "<rootDir>/../src/token/$1",
-    "^user/(.*)$": "<rootDir>/../src/user/$1",
-    "^file-upload/(.*)$": "<rootDir>/../src/file-upload/$1",
-    "^config/(.*)$": "<rootDir>/../src/config/$1",
-    "^helpers/(.*)$": "<rootDir>/../src/helpers/$1",
-    "^enums/(.*)$": "<rootDir>/../src/enums/$1",
-    "^constants/(.*)$": "<rootDir>/../src/constants/$1",
-    "^decorators/(.*)$": "<rootDir>/../src/decorators/$1",
-    "^types/(.*)$": "<rootDir>/../src/types/$1"
+    "^@/(.*)$": "<rootDir>/../src/$1"
   }
 }
