@@ -33,7 +33,7 @@ export class UserService {
     try {
       return this.userModel.findByIdAndUpdate(id, update, { new: true }).exec();
     } catch {
-      throw new InternalServerErrorException('Failed to delete user');
+      throw new InternalServerErrorException('Failed to update user');
     }
   }
 
