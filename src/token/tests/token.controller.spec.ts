@@ -34,7 +34,7 @@ describe('TokenController', () => {
     jest.clearAllMocks();
   });
 
-  describe('getNewToken', () => {
+  describe('getNewToken()', () => {
     it('should return new tokens if refresh token is valid', async () => {
       const fakeRefreshToken = 'valid-refresh-token';
       const fakeAuthorization = `Bearer ${fakeRefreshToken}`;
@@ -43,7 +43,6 @@ describe('TokenController', () => {
         accessToken: 'new-access-token',
         refreshToken: 'new-refresh-token',
       };
-
       mockTokenService.verifyToken.mockResolvedValue(fakeUserId);
       mockTokenService.generateJwtTokens.mockReturnValue(fakeTokens);
       mockTokenService.saveTokenToDb.mockResolvedValue(undefined);
@@ -75,7 +74,6 @@ describe('TokenController', () => {
       mockTokenService.verifyToken.mockImplementation(() => {
         throw new Error('Invalid token');
       });
-
       const fakeAuthorization = 'Bearer invalid-refresh-token';
 
       await expect(

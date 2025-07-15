@@ -69,7 +69,7 @@ describe('TokenService', () => {
     jest.clearAllMocks();
   });
 
-  describe('generateJwtTokens', () => {
+  describe('generateJwtTokens()', () => {
     it('should generate access and refresh tokens', () => {
       (jwtService.sign as jest.Mock).mockReturnValueOnce('access-token');
       (jwtService.sign as jest.Mock).mockReturnValueOnce('refresh-token');
@@ -84,7 +84,7 @@ describe('TokenService', () => {
     });
   });
 
-  describe('saveTokenToDb', () => {
+  describe('saveTokenToDb()', () => {
     it('should save hashed refresh token', async () => {
       await tokenService.saveTokenToDb('user-id', 'refresh-token');
 
@@ -94,12 +94,11 @@ describe('TokenService', () => {
     });
   });
 
-  describe('verifyToken', () => {
+  describe('verifyToken()', () => {
     it('should return userId if token is valid and matches hash', async () => {
       (jwtService.verifyAsync as jest.Mock).mockResolvedValue({
         id: 'user-id',
       });
-
       (userService.findById as jest.Mock).mockResolvedValue({
         refreshToken: 'hashed-refresh-token',
       });
@@ -109,7 +108,6 @@ describe('TokenService', () => {
       expect(jwtService.verifyAsync).toHaveBeenCalledWith('refresh-token', {
         secret: 'refresh-secret',
       });
-
       expect(result).toBe('user-id');
     });
 
@@ -117,7 +115,6 @@ describe('TokenService', () => {
       (jwtService.verifyAsync as jest.Mock).mockResolvedValue({
         id: 'user-id',
       });
-
       (userService.findById as jest.Mock).mockResolvedValue({
         refreshToken: null,
       });
@@ -131,11 +128,9 @@ describe('TokenService', () => {
       (jwtService.verifyAsync as jest.Mock).mockResolvedValue({
         id: 'user-id',
       });
-
       (userService.findById as jest.Mock).mockResolvedValue({
         refreshToken: 'some-other-hash',
       });
-
       (compareHash as jest.Mock).mockReturnValue(false);
 
       await expect(tokenService.verifyToken('refresh-token')).rejects.toThrow(

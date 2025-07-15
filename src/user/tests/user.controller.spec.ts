@@ -43,10 +43,9 @@ describe('UserController', () => {
     fileService = module.get(FileUploadService);
   });
 
-  describe('getTotalUsers', () => {
+  describe('getTotalUsers()', () => {
     it('should return total users', async () => {
       const mockUser = { role: Role.Admin };
-
       userService.findById.mockResolvedValue(mockUser);
       userService.getTotalUsers.mockResolvedValue(5);
 
@@ -64,49 +63,49 @@ describe('UserController', () => {
     });
   });
 
-  describe('findAllUsers', () => {
+  describe('findAllUsers()', () => {
     it('should return users with pagination', async () => {
       const users = [{ email: 'test@mail.com' }];
-
       userService.findById.mockResolvedValue({ role: Role.Admin });
       userService.findAllWithPagination.mockResolvedValue(users);
 
       const result = await controller.findAllUsers('admin-id', 1, 10);
+
       expect(result).toEqual(users);
     });
   });
 
-  describe('searchUsers', () => {
+  describe('searchUsers()', () => {
     it('should return filtered users', async () => {
       const users = [{ username: 'admin' }];
-
       userService.findById.mockResolvedValue({ role: Role.Admin });
       userService.searchUsers.mockResolvedValue(users);
 
       const result = await controller.searchUsers('admin-id', 'adm');
+
       expect(result).toEqual(users);
     });
   });
 
-  describe('findMeById', () => {
+  describe('findMeById()', () => {
     it('should return current user', async () => {
       const user = { email: 'me@mail.com' };
-
       userService.findById.mockResolvedValue(user);
 
       const result = await controller.findMeById('me-id');
+
       expect(result).toEqual(user);
     });
   });
 
-  describe('findUserById', () => {
+  describe('findUserById()', () => {
     it('should return user if admin', async () => {
       const user = { username: 'admin' };
-
       userService.findById.mockResolvedValueOnce({ role: Role.Admin });
       userService.findById.mockResolvedValueOnce(user);
 
       const result = await controller.findUserById('admin-id', 'target-id');
+
       expect(result).toEqual(user);
     });
 
@@ -119,14 +118,13 @@ describe('UserController', () => {
     });
   });
 
-  describe('updateUserById', () => {
+  describe('updateUserById()', () => {
     it('should update user with avatar', async () => {
       const dto = { email: 'new@mail.com', isAdmin: true };
       const file = {
         buffer: Buffer.from(''),
         originalname: 'file.png',
       } as Express.Multer.File;
-
       userService.findById.mockResolvedValueOnce({ role: Role.Admin });
       userService.findById.mockResolvedValueOnce({
         role: Role.User,
@@ -143,6 +141,7 @@ describe('UserController', () => {
         dto,
         file,
       );
+
       expect(result).toEqual({ email: 'new@mail.com' });
     });
 
@@ -176,12 +175,13 @@ describe('UserController', () => {
     });
   });
 
-  describe('deleteUserById', () => {
+  describe('deleteUserById()', () => {
     it('should delete user if admin', async () => {
       userService.findById.mockResolvedValue({ role: Role.Admin });
       userService.delete.mockResolvedValue(undefined);
 
       const result = await controller.deleteUserById('admin-id', 'target-id');
+
       expect(result).toEqual({ message: 'User deleted successfuly' });
     });
 

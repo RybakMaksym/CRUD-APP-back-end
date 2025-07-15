@@ -126,7 +126,6 @@ describe('UserController (e2e)', () => {
       .field('username', 'NormalUser')
       .field('isAdmin', false)
       .expect(201);
-
     const userToken = res.body.accessToken;
 
     await request(server)
