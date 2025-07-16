@@ -2,9 +2,9 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
-import { compareHash, hash } from 'helpers/hash';
-import { ITokens } from 'token/types/tokens';
-import { UserService } from 'user/user.service';
+import { compareHash, hash } from '@/helpers/hash';
+import { ITokens } from '@/token/types/tokens';
+import { UserService } from '@/user/user.service';
 
 @Injectable()
 export class TokenService {
@@ -48,7 +48,7 @@ export class TokenService {
     if (
       !id ||
       !user.refreshToken ||
-      compareHash(user.refreshToken, refreshToken)
+      !compareHash(refreshToken, user.refreshToken)
     ) {
       throw new UnauthorizedException('Unauthorized');
     }

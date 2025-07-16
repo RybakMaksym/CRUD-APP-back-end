@@ -81,6 +81,23 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/main.ts",
+      "<rootDir>/constants/",
+      "<rootDir>/enums/",
+      "<rootDir>/config/",
+      "<rootDir>/decorators/",
+      "<rootDir>/app/app.module.ts",
+      "<rootDir>/auth/auth.module.ts",
+      "<rootDir>/auth/strategies/",
+      "<rootDir>/token/token.module.ts",
+      "<rootDir>/user/user.module.ts",
+      "<rootDir>/user/models",
+      "<rootDir>/file-upload/file-upload.module.ts"
+    ],
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/$1"
+    }
   }
 }

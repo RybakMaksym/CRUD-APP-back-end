@@ -9,15 +9,15 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-import { AuthService } from 'auth/auth.service';
-import { CreateUserDTO } from 'auth/dto/create-user.dto';
-import { LogInUserDTO } from 'auth/dto/log-in-user.dto';
-import { RefreshTokenGuard } from 'auth/guards/refresh-token.guard';
-import { IAuthResponse } from 'auth/types/auth.response';
-import { AVATAR_VALIDATION_OPTIONS } from 'constants/avatar-validation-options.constants';
-import { FileUploadService } from 'file-upload/file-upload.service';
-import { TokenService } from 'token/token.service';
-import { IMessageReponse } from 'types/message.interfaces';
+import { AuthService } from '@/auth/auth.service';
+import { CreateUserDTO } from '@/auth/dto/create-user.dto';
+import { LogInUserDTO } from '@/auth/dto/log-in-user.dto';
+import { RefreshTokenGuard } from '@/auth/guards/refresh-token.guard';
+import { IAuthResponse } from '@/auth/types/auth.response';
+import { AVATAR_VALIDATION_OPTIONS } from '@/constants/avatar-validation-options.constants';
+import { FileUploadService } from '@/file-upload/file-upload.service';
+import { TokenService } from '@/token/token.service';
+import { IMessageReponse } from '@/types/message.interfaces';
 
 @Controller('auth')
 export class AuthController {

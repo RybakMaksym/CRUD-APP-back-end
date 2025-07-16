@@ -15,16 +15,17 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-import { AccessTokenGuard } from 'auth/guards/access-token.guard';
-import { AVATAR_VALIDATION_OPTIONS } from 'constants/avatar-validation-options.constants';
-import { DEFAULT_USERS_PAGE_LIMIT } from 'constants/user.constants';
-import { GetUserId } from 'decorators/get-user-id.decorator';
-import { Role } from 'enums/role.enum';
-import { FileUploadService } from 'file-upload/file-upload.service';
-import { IMessageReponse } from 'types/message.interfaces';
-import { UpdateUserDTO } from 'user/dto/update-user.dto';
-import { IUser } from 'user/types/user';
-import { UserService } from 'user/user.service';
+import { AccessTokenGuard } from '@/auth/guards/access-token.guard';
+import { AVATAR_VALIDATION_OPTIONS } from '@/constants/avatar-validation-options.constants';
+import { DEFAULT_USERS_PAGE_LIMIT } from '@/constants/user.constants';
+import { GetUserId } from '@/decorators/get-user-id.decorator';
+import { Role } from '@/enums/role.enum';
+import { FileUploadService } from '@/file-upload/file-upload.service';
+import { IMessageReponse } from '@/types/message.interfaces';
+import { ITotalResponse } from '@/types/response.interfaces';
+import { UpdateUserDTO } from '@/user/dto/update-user.dto';
+import { IUser } from '@/user/types/user';
+import { UserService } from '@/user/user.service';
 
 @Controller('user')
 export class UserController {
@@ -35,14 +36,18 @@ export class UserController {
 
   @Get('total')
   @UseGuards(AccessTokenGuard)
-  public async getTotalUsers(@GetUserId() userId: string): Promise<number> {
+  public async getTotalUsers(
+    @GetUserId() userId: string,
+  ): Promise<ITotalResponse> {
     const user = await this.userService.findById(userId);
 
     if (user.role !== Role.Admin) {
       throw new ForbiddenException('You do not have access to this resource');
     }
 
-    return this.userService.getTotalUsers();
+    const total = await this.userService.getTotalUsers();
+
+    return { total };
   }
 
   @Get('list')
