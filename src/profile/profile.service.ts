@@ -8,7 +8,7 @@ import { Model, UpdateQuery } from 'mongoose';
 
 import { CreateProfileDTO } from '@/profile/dto/create-profile.dto';
 import { Profile, ProfileDocument } from '@/profile/models/profile.model';
-import { IProfile } from '@/profile/types/profile';
+import { IPopulatedProfiles, IProfile } from '@/profile/types/profile';
 import { User, UserDocument } from '@/user/models/user.model';
 
 @Injectable()
@@ -65,7 +65,7 @@ export class ProfileService {
   public async findAllByUserId(userId: string): Promise<IProfile[]> {
     const user = await this.userModel
       .findById(userId)
-      .populate<{ profiles: IProfile[] }>('profiles')
+      .populate<IPopulatedProfiles>('profiles')
       .exec();
 
     return user.profiles;

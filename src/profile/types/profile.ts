@@ -9,3 +9,7 @@ export interface IProfile {
   city: string;
   avatarUrl?: string;
 }
+
+export interface IPopulatedProfiles {
+  profiles: IProfile[];
+}
