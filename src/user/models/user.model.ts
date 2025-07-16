@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 import { Role } from '@/enums/role.enum';
+import { Profile } from '@/profile/models/profile.model';
 import { IUser } from '@/user/types/user';
 
 export type UserDocument = User & Document;
@@ -40,6 +41,9 @@ export class User extends Document implements IUser {
 
   @Prop()
   public avatarUrl?: string;
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: Profile.name }] })
+  public profiles: Types.ObjectId[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

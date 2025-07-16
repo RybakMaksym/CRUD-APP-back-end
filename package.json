@@ -83,17 +83,22 @@
     "coverageDirectory": "../coverage",
     "coveragePathIgnorePatterns": [
       "<rootDir>/main.ts",
-      "<rootDir>/constants/",
-      "<rootDir>/enums/",
-      "<rootDir>/config/",
-      "<rootDir>/decorators/",
+      "<rootDir>/constants",
+      "<rootDir>/enums",
+      "<rootDir>/config",
+      "<rootDir>/decorators",
       "<rootDir>/app/app.module.ts",
       "<rootDir>/auth/auth.module.ts",
-      "<rootDir>/auth/strategies/",
+      "<rootDir>/auth/strategies",
+      "<rootDir>/auth/dto",
       "<rootDir>/token/token.module.ts",
       "<rootDir>/user/user.module.ts",
+      "<rootDir>/user/dto",
       "<rootDir>/user/models",
-      "<rootDir>/file-upload/file-upload.module.ts"
+      "<rootDir>/file-upload/file-upload.module.ts",
+      "<rootDir>/profile/profile.module.ts",
+      "<rootDir>/profile/dto",
+      "<rootDir>/profile/models"
     ],
     "testEnvironment": "node",
     "moduleNameMapper": {

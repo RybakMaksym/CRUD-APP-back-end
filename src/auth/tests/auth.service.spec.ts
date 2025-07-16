@@ -69,6 +69,7 @@ describe('AuthService', () => {
         passwordHash: 'hash-password',
         role: Role.User,
         avatarUrl: null,
+        profiles: [],
       };
       const expectedUser = {
         id: 'user-id',
@@ -105,6 +106,7 @@ describe('AuthService', () => {
         passwordHash: 'hash-password',
         role: Role.User,
         avatarUrl: null,
+        profiles: [],
       };
       userService.findByEmail.mockResolvedValue(mockUser);
 
@@ -132,6 +134,7 @@ describe('AuthService', () => {
         passwordHash: 'hashed-password',
         role: Role.User,
         avatarUrl: null,
+        profiles: [],
       };
       const mockTokens = {
         accessToken: 'access-token',
@@ -181,6 +184,7 @@ describe('AuthService', () => {
         passwordHash: 'hashed-password',
         role: Role.User,
         avatarUrl: null,
+        profiles: [],
       };
       userService.findByEmail.mockResolvedValue(mockUser);
       (compareHash as jest.Mock).mockReturnValue(false);
