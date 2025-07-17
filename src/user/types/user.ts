@@ -1,6 +1,6 @@
-import { Types } from 'mongoose';
+import type { Types } from 'mongoose';
 
-import { Role } from 'enums/role.enum';
+import type { Role } from 'enums/role.enum';
 
 export interface IUser {
   id?: string;

@@ -1,7 +1,10 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import type { INestApplication } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { getConnectionToken } from '@nestjs/mongoose';
-import { Test, TestingModule } from '@nestjs/testing';
-import { Connection, disconnect } from 'mongoose';
+import type { TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
+import type { Connection } from 'mongoose';
+import { disconnect } from 'mongoose';
 import * as request from 'supertest';
 
 import { AppModule } from '@/app/app.module';

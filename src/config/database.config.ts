@@ -1,5 +1,5 @@
-import { ConfigService } from '@nestjs/config';
-import { MongooseModuleOptions } from '@nestjs/mongoose';
+import type { ConfigService } from '@nestjs/config';
+import type { MongooseModuleOptions } from '@nestjs/mongoose';
 
 export const getDbConfig = async (
   configService: ConfigService,

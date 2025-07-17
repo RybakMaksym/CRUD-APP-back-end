@@ -1,11 +1,13 @@
 import { Transform } from 'class-transformer';
 import {
+  IsAlphanumeric,
   IsDate,
   IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
   IsUrl,
+  MaxDate,
 } from 'class-validator';
 
 import { Gender } from '@/enums/gender.enum';
@@ -13,6 +15,7 @@ import { Gender } from '@/enums/gender.enum';
 export class CreateProfileDTO {
   @IsNotEmpty()
   @IsString()
+  @IsAlphanumeric()
   @Transform(({ value }) => value?.trim())
   public name: string;
 
@@ -22,6 +25,7 @@ export class CreateProfileDTO {
 
   @IsNotEmpty()
   @IsDate()
+  @MaxDate(new Date(), { message: 'Birth date cannot be in the future' })
   @Transform(({ value }) => new Date(value))
   public birthDate: Date;
 

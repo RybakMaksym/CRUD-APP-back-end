@@ -1,10 +1,11 @@
 import { NotFoundException } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
+import type { TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 
 import { Gender } from '@/enums/gender.enum';
 import { FileUploadService } from '@/file-upload/file-upload.service';
-import { CreateProfileDTO } from '@/profile/dto/create-profile.dto';
-import { UpdateProfileDTO } from '@/profile/dto/update-profile.dto';
+import type { CreateProfileDTO } from '@/profile/dto/create-profile.dto';
+import type { UpdateProfileDTO } from '@/profile/dto/update-profile.dto';
 import { ProfileController } from '@/profile/profile.controller';
 import { ProfileService } from '@/profile/profile.service';
 
@@ -59,6 +60,7 @@ describe('ProfileController', () => {
       profileService.findAllByUserId.mockResolvedValue(profiles as any);
 
       const result = await controller.getMyProfiles('user-id');
+
       expect(profileService.findAllByUserId).toHaveBeenCalledWith('user-id');
       expect(result).toEqual(profiles);
     });

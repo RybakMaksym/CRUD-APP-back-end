@@ -6,6 +6,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, UpdateQuery } from 'mongoose';
 
+import { USER_POPULATED_DATA } from '@/constants/populated-data.constants';
 import { CreateProfileDTO } from '@/profile/dto/create-profile.dto';
 import { Profile, ProfileDocument } from '@/profile/models/profile.model';
 import { IPopulatedProfiles, IProfile } from '@/profile/types/profile';
@@ -65,7 +66,7 @@ export class ProfileService {
   public async findAllByUserId(userId: string): Promise<IProfile[]> {
     const user = await this.userModel
       .findById(userId)
-      .populate<IPopulatedProfiles>('profiles')
+      .populate<IPopulatedProfiles>(USER_POPULATED_DATA.profilesBasic)
       .exec();
 
     return user.profiles;

@@ -1,9 +1,10 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
+import type { TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 
 import { AuthService } from '@/auth/auth.service';
-import { CreateUserDTO } from '@/auth/dto/create-user.dto';
-import { LogInUserDTO } from '@/auth/dto/log-in-user.dto';
+import type { CreateUserDTO } from '@/auth/dto/create-user.dto';
+import type { LogInUserDTO } from '@/auth/dto/log-in-user.dto';
 import { Role } from '@/enums/role.enum';
 import { compareHash } from '@/helpers/hash';
 import { TokenService } from '@/token/token.service';

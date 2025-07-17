@@ -1,5 +1,6 @@
 import { ConfigService } from '@nestjs/config';
-import { Test, TestingModule } from '@nestjs/testing';
+import type { TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import { v2 as cloudinary } from 'cloudinary';
 
 import { FileUploadService } from '@/file-upload/file-upload.service';

@@ -1,9 +1,10 @@
 import { getModelToken } from '@nestjs/mongoose';
-import { Test, TestingModule } from '@nestjs/testing';
-import { Model } from 'mongoose';
+import type { TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
+import type { Model } from 'mongoose';
 
 import { Gender } from '@/enums/gender.enum';
-import { CreateProfileDTO } from '@/profile/dto/create-profile.dto';
+import type { CreateProfileDTO } from '@/profile/dto/create-profile.dto';
 import { Profile } from '@/profile/models/profile.model';
 import { ProfileService } from '@/profile/profile.service';
 import { User } from '@/user/models/user.model';
