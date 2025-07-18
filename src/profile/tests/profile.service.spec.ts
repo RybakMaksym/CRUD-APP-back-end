@@ -11,6 +11,7 @@ import { User } from '@/user/models/user.model';
 
 const mockProfileModel = {
   create: jest.fn(),
+  find: jest.fn(),
   findByIdAndUpdate: jest.fn(),
   findById: jest.fn(),
   findByIdAndDelete: jest.fn(),
@@ -59,12 +60,15 @@ describe('ProfileService', () => {
         country: 'USA',
         city: 'New York',
       };
-      const profile = { id: 'profile-id', ...dto };
+      const profile = { id: 'profile-id', ...dto, ownerId: 'user-id' };
       (profileModel.create as jest.Mock).mockResolvedValue(profile);
 
       const result = await service.create('user-id', dto);
 
-      expect(profileModel.create).toHaveBeenCalledWith(dto);
+      expect(profileModel.create).toHaveBeenCalledWith({
+        ...dto,
+        ownerId: 'user-id',
+      });
       expect(userModel.findByIdAndUpdate).toHaveBeenCalledWith('user-id', {
         $push: { profiles: 'profile-id' },
       });
@@ -155,6 +159,44 @@ describe('ProfileService', () => {
 
       expect(userModel.findById).toHaveBeenCalledWith('user-id');
       expect(result).toEqual(profiles);
+    });
+  });
+
+  describe('searchProfiles()', () => {
+    it('should return all profiles of a user if query is empty', async () => {
+      const mockProfiles = [{ name: 'Anna' }];
+      const spy = jest
+        .spyOn(service, 'findAllByUserId')
+        .mockResolvedValue(mockProfiles as any);
+
+      const result = await service.searchProfiles('', 'user-id');
+
+      expect(spy).toHaveBeenCalledWith('user-id');
+      expect(result).toEqual(mockProfiles);
+    });
+
+    it('should return filtered profiles if query is provided', async () => {
+      const mockProfiles = [{ name: 'John' }, { name: 'Johnny' }];
+      (profileModel.find as jest.Mock).mockResolvedValue(mockProfiles);
+
+      const result = await service.searchProfiles('john', 'user-id');
+
+      expect(profileModel.find).toHaveBeenCalledWith({
+        ownerId: 'user-id',
+        $or: [
+          { name: expect.any(RegExp) },
+          { gender: expect.any(RegExp) },
+          { country: expect.any(RegExp) },
+          { city: expect.any(RegExp) },
+        ],
+      });
+      const regexArg = (profileModel.find as jest.Mock).mock.calls[0][0].$or[0]
+        .name;
+      expect(regexArg).toBeInstanceOf(RegExp);
+      expect(regexArg.source).toBe('john');
+      expect(regexArg.flags).toContain('i');
+
+      expect(result).toEqual(mockProfiles);
     });
   });
 });

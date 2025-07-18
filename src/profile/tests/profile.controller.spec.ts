@@ -15,6 +15,7 @@ const mockProfileService = {
   findById: jest.fn(),
   update: jest.fn(),
   delete: jest.fn(),
+  searchProfiles: jest.fn(),
 };
 
 const mockFileUploadService = {
@@ -103,12 +104,15 @@ describe('ProfileController', () => {
         country: 'Ukraine',
         city: 'Kyiv',
       };
-      profileService.create.mockResolvedValue(dto);
+      profileService.create.mockResolvedValue({
+        ...dto,
+        ownerId: 'user-id',
+      } as any);
 
       const result = await controller.create('user-id', dto, undefined);
 
       expect(fileUploadService.uploadImage).not.toHaveBeenCalled();
-      expect(result).toEqual(dto);
+      expect(result).toMatchObject({ ...dto, ownerId: 'user-id' });
     });
   });
 
@@ -167,6 +171,32 @@ describe('ProfileController', () => {
 
       expect(profileService.delete).toHaveBeenCalledWith('profile-id');
       expect(result).toEqual({ message: 'Profile deleted successfuly' });
+    });
+  });
+
+  describe('searchProfiles()', () => {
+    it('should return profiles by query', async () => {
+      const query = 'Anna';
+      const myId = 'user-id';
+      const expected = [{ name: 'Anna', ownerId: myId }];
+      profileService.searchProfiles.mockResolvedValue(expected as any);
+
+      const result = await controller.searchProfiles(myId, query);
+
+      expect(profileService.searchProfiles).toHaveBeenCalledWith(query, myId);
+      expect(result).toEqual(expected);
+    });
+
+    it('should return all profiles if query is empty', async () => {
+      const query = '';
+      const myId = 'user-id';
+      const expected = [{ name: 'Anna', ownerId: myId }];
+      profileService.searchProfiles.mockResolvedValue(expected as any);
+
+      const result = await controller.searchProfiles(myId, query);
+
+      expect(profileService.searchProfiles).toHaveBeenCalledWith('', myId);
+      expect(result).toEqual(expected);
     });
   });
 });

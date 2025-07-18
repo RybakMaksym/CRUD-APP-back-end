@@ -24,7 +24,10 @@ export class ProfileService {
     userId: string,
     dto: CreateProfileDTO,
   ): Promise<IProfile> {
-    const profile = await this.profileModel.create(dto);
+    const profile = await this.profileModel.create({
+      ...dto,
+      ownerId: userId,
+    });
     await this.userModel.findByIdAndUpdate(userId, {
       $push: { profiles: profile.id },
     });
@@ -70,5 +73,24 @@ export class ProfileService {
       .exec();
 
     return user.profiles;
+  }
+
+  public async searchProfiles(
+    query: string,
+    userId: string,
+  ): Promise<IProfile[]> {
+    if (!query) return this.findAllByUserId(userId);
+
+    const regex = new RegExp(query, 'i');
+
+    return this.profileModel.find({
+      ownerId: userId,
+      $or: [
+        { name: regex },
+        { gender: regex },
+        { country: regex },
+        { city: regex },
+      ],
+    });
   }
 }

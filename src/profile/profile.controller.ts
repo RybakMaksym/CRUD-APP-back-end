@@ -7,6 +7,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -34,6 +35,15 @@ export class ProfileController {
   @UseGuards(AccessTokenGuard)
   public async getMyProfiles(@GetUserId() myId: string): Promise<IProfile[]> {
     return this.profileService.findAllByUserId(myId);
+  }
+
+  @Get('search')
+  @UseGuards(AccessTokenGuard)
+  public async searchProfiles(
+    @GetUserId() myId: string,
+    @Query('query') query: string,
+  ): Promise<IProfile[]> {
+    return this.profileService.searchProfiles(query, myId);
   }
 
   @Post('create')
