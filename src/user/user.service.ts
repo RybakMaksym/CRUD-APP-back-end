@@ -7,8 +7,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, UpdateQuery } from 'mongoose';
 
 import { CreateUserDTO } from '@/auth/dto/create-user.dto';
+import { USER_POPULATED_DATA } from '@/constants/populated-data.constants';
 import { Role } from '@/enums/role.enum';
 import { hash } from '@/helpers/hash';
+import { IPopulatedProfiles } from '@/profile/types/profile';
 import { User, UserDocument } from '@/user/models/user.model';
 import { IUser } from '@/user/types/user';
 
@@ -56,7 +58,10 @@ export class UserService {
   }
 
   public async findById(id: string): Promise<IUser | null> {
-    return this.userModel.findOne({ _id: id }).exec();
+    return this.userModel
+      .findOne({ _id: id })
+      .populate<IPopulatedProfiles>(USER_POPULATED_DATA.profilesBasic)
+      .exec();
   }
 
   public async findAll(): Promise<IUser[]> {
