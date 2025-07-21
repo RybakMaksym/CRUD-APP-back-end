@@ -93,4 +93,14 @@ export class ProfileService {
       ],
     });
   }
+
+  public async findAllWithPagination(
+    ownerId: string,
+    page: number,
+    limit: number,
+  ): Promise<IProfile[]> {
+    const skip = (page - 1) * limit;
+
+    return this.profileModel.find({ ownerId }).skip(skip).limit(limit).exec();
+  }
 }

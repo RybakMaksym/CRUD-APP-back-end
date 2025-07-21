@@ -1,0 +1,1 @@
+export const DEFAULT_PROFILES_PAGE_LIMIT = 8;
