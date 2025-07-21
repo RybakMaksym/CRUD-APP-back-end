@@ -1,6 +1,8 @@
-import { Role } from 'enums/role.enum';
+import type { Types } from 'mongoose';
 
-export type IUser = {
+import type { Role } from 'enums/role.enum';
+
+export interface IUser {
   id?: string;
   email: string;
   username: string;
@@ -8,4 +10,5 @@ export type IUser = {
   role: Role;
   refreshToken?: string;
   avatarUrl?: string;
-};
+  profiles: Types.ObjectId[];
+}

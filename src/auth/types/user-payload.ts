@@ -1,4 +1,4 @@
-import { Role } from '@/enums/role.enum';
+import type { Role } from '@/enums/role.enum';
 
 export interface IUserPayload {
   id: string;

@@ -1,7 +1,8 @@
 import { getModelToken } from '@nestjs/mongoose';
-import { Test, TestingModule } from '@nestjs/testing';
+import type { TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 
-import { CreateUserDTO } from '@/auth/dto/create-user.dto';
+import type { CreateUserDTO } from '@/auth/dto/create-user.dto';
 import { Role } from '@/enums/role.enum';
 import { User } from '@/user/models/user.model';
 import { UserService } from '@/user/user.service';
