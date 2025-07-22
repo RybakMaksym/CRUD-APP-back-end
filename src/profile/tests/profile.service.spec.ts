@@ -199,4 +199,38 @@ describe('ProfileService', () => {
       expect(result).toEqual(mockProfiles);
     });
   });
+
+  describe('findAllWithPagination()', () => {
+    it('should return paginated profiles for given user', async () => {
+      const fakeProfiles = [
+        { name: 'Test Profile 1' },
+        { name: 'Test Profile 2' },
+      ];
+      const execMock = jest.fn().mockResolvedValue(fakeProfiles);
+      const limitMock = jest.fn().mockReturnValue({ exec: execMock });
+      const skipMock = jest.fn().mockReturnValue({ limit: limitMock });
+      const findMock = jest.fn().mockReturnValue({ skip: skipMock });
+      profileModel.find = findMock;
+
+      const result = await service.findAllWithPagination('user-id', 2, 10);
+
+      expect(findMock).toHaveBeenCalledWith({ ownerId: 'user-id' });
+      expect(skipMock).toHaveBeenCalledWith(10);
+      expect(limitMock).toHaveBeenCalledWith(10);
+      expect(result).toEqual(fakeProfiles);
+    });
+
+    it('should calculate correct skip value for different page and limit', async () => {
+      const execMock = jest.fn().mockResolvedValue([]);
+      const limitMock = jest.fn().mockReturnValue({ exec: execMock });
+      const skipMock = jest.fn().mockReturnValue({ limit: limitMock });
+      const findMock = jest.fn().mockReturnValue({ skip: skipMock });
+      profileModel.find = findMock;
+
+      await service.findAllWithPagination('user-id', 3, 5);
+
+      expect(skipMock).toHaveBeenCalledWith(10);
+      expect(limitMock).toHaveBeenCalledWith(5);
+    });
+  });
 });

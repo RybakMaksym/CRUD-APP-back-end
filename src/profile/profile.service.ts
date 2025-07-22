@@ -57,6 +57,9 @@ export class ProfileService {
 
     try {
       await this.profileModel.findByIdAndDelete(id);
+      await this.userModel.findByIdAndUpdate(profile.ownerId, {
+        $pull: { profiles: profile.id },
+      });
     } catch {
       throw new InternalServerErrorException('Failed to delete profile');
     }

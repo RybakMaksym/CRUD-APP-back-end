@@ -11,6 +11,7 @@ import { ProfileService } from '@/profile/profile.service';
 
 const mockProfileService = {
   findAllByUserId: jest.fn(),
+  findAllWithPagination: jest.fn(),
   create: jest.fn(),
   findById: jest.fn(),
   update: jest.fn(),
@@ -58,11 +59,15 @@ describe('ProfileController', () => {
   describe('getMyProfiles()', () => {
     it('should return all profiles of user', async () => {
       const profiles = [{ name: 'Profile1' }];
-      profileService.findAllByUserId.mockResolvedValue(profiles as any);
+      profileService.findAllWithPagination.mockResolvedValue(profiles as any);
 
       const result = await controller.getMyProfiles('user-id');
 
-      expect(profileService.findAllByUserId).toHaveBeenCalledWith('user-id');
+      expect(profileService.findAllWithPagination).toHaveBeenCalledWith(
+        'user-id',
+        1,
+        8,
+      );
       expect(result).toEqual(profiles);
     });
   });
