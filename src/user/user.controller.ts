@@ -14,6 +14,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Types } from 'mongoose';
 
 import { AccessTokenGuard } from '@/auth/guards/access-token.guard';
 import { AVATAR_VALIDATION_OPTIONS } from '@/constants/avatar-validation-options.constants';
@@ -56,7 +57,7 @@ export class UserController {
     @GetUserId() userId: string,
     @Query('page') page = 1,
     @Query('limit') limit = DEFAULT_USERS_PAGE_LIMIT,
-  ): Promise<IUser[]> {
+  ): Promise<IUser<Types.ObjectId[]>[]> {
     const user = await this.userService.findById(userId);
 
     if (user.role !== Role.Admin) {
@@ -71,7 +72,7 @@ export class UserController {
   public async searchUsers(
     @GetUserId() userId: string,
     @Query('query') query: string,
-  ): Promise<IUser[]> {
+  ): Promise<IUser<Types.ObjectId[]>[]> {
     const user = await this.userService.findById(userId);
 
     if (user.role !== Role.Admin) {
@@ -83,7 +84,9 @@ export class UserController {
 
   @Get('profile')
   @UseGuards(AccessTokenGuard)
-  public async findMeById(@GetUserId() userId: string): Promise<IUser> {
+  public async findMeById(
+    @GetUserId() userId: string,
+  ): Promise<IUser<Types.ObjectId[]>> {
     return this.userService.findById(userId);
   }
 
@@ -92,7 +95,7 @@ export class UserController {
   public async findUserById(
     @GetUserId() myId: string,
     @Param('id') userId: string,
-  ): Promise<IUser> {
+  ): Promise<IUser<Types.ObjectId[]>> {
     const user = await this.userService.findById(myId);
 
     if (user.role !== Role.Admin) {
@@ -110,7 +113,7 @@ export class UserController {
     @Param('id') userId: string,
     @Body() dto: UpdateUserDTO,
     @UploadedFile() file?: Express.Multer.File,
-  ): Promise<IUser> {
+  ): Promise<IUser<Types.ObjectId[]>> {
     const admin = await this.userService.findById(myId);
 
     if (admin.role !== Role.Admin) {

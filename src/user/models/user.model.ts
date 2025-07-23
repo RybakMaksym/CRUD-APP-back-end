@@ -23,7 +23,7 @@ export type UserDocument = User & Document;
     },
   },
 })
-export class User extends Document implements IUser {
+export class User extends Document implements IUser<Types.ObjectId[]> {
   @Prop({ required: true, unique: true, lowercase: true })
   public email: string;
 

@@ -3,7 +3,7 @@ import type { Types } from 'mongoose';
 import type { IProfile } from '@/profile/types/profile';
 import type { Role } from 'enums/role.enum';
 
-export interface IUser {
+export interface IUser<T extends Types.ObjectId[] | IProfile[]> {
   id?: string;
   email: string;
   username: string;
@@ -11,5 +11,5 @@ export interface IUser {
   role: Role;
   refreshToken?: string;
   avatarUrl?: string;
-  profiles: Types.ObjectId[] | IProfile[];
+  profiles: T;
 }
