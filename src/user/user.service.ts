@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types, UpdateQuery } from 'mongoose';
+import { Model, UpdateQuery } from 'mongoose';
 
 import { CreateUserDTO } from '@/auth/dto/create-user.dto';
 import { Role } from '@/enums/role.enum';
@@ -18,7 +18,7 @@ export class UserService {
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
 
-  public async create(dto: CreateUserDTO): Promise<IUser<Types.ObjectId[]>> {
+  public async create(dto: CreateUserDTO): Promise<IUser> {
     return this.userModel.create({
       ...dto,
       passwordHash: hash(dto.password),
@@ -29,7 +29,7 @@ export class UserService {
   public async update(
     id: string,
     update: UpdateQuery<UserDocument>,
-  ): Promise<IUser<Types.ObjectId[]>> {
+  ): Promise<IUser> {
     try {
       return this.userModel.findByIdAndUpdate(id, update, { new: true }).exec();
     } catch {
@@ -51,17 +51,15 @@ export class UserService {
     }
   }
 
-  public async findByEmail(
-    email: string,
-  ): Promise<IUser<Types.ObjectId[]> | null> {
+  public async findByEmail(email: string): Promise<IUser | null> {
     return this.userModel.findOne({ email }).exec();
   }
 
-  public async findById(id: string): Promise<IUser<Types.ObjectId[]> | null> {
+  public async findById(id: string): Promise<IUser | null> {
     return this.userModel.findOne({ _id: id }).exec();
   }
 
-  public async findAll(): Promise<IUser<Types.ObjectId[]>[]> {
+  public async findAll(): Promise<IUser[]> {
     return this.userModel.find().exec();
   }
 
@@ -76,7 +74,7 @@ export class UserService {
     return users.length > 0;
   }
 
-  public async searchUsers(query: string): Promise<IUser<Types.ObjectId[]>[]> {
+  public async searchUsers(query: string): Promise<IUser[]> {
     if (!query) return this.findAll();
 
     const regex = new RegExp(query, 'i');
@@ -93,7 +91,7 @@ export class UserService {
   public async findAllWithPagination(
     page: number,
     limit: number,
-  ): Promise<IUser<Types.ObjectId[]>[]> {
+  ): Promise<IUser[]> {
     const skip = (page - 1) * limit;
 
     return this.userModel.find().skip(skip).limit(limit).exec();

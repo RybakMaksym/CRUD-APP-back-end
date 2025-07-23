@@ -3,7 +3,6 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Types } from 'mongoose';
 
 import { CreateUserDTO } from '@/auth/dto/create-user.dto';
 import { LogInUserDTO } from '@/auth/dto/log-in-user.dto';
@@ -20,9 +19,7 @@ export class AuthService {
     private readonly tokenService: TokenService,
   ) {}
 
-  private async validateUserPassword(
-    dto: LogInUserDTO,
-  ): Promise<IUser<Types.ObjectId[]>> {
+  private async validateUserPassword(dto: LogInUserDTO): Promise<IUser> {
     const user = await this.userService.findByEmail(dto.email);
 
     if (!user) throw new NotFoundException('User not found');
