@@ -8,6 +8,7 @@ import { Model, UpdateQuery } from 'mongoose';
 
 import { CreateUserDTO } from '@/auth/dto/create-user.dto';
 import { Role } from '@/enums/role.enum';
+import { escapeRegex } from '@/helpers/escape-regex';
 import { hash } from '@/helpers/hash';
 import { User, UserDocument } from '@/user/models/user.model';
 import { IUser } from '@/user/types/user';
@@ -77,7 +78,8 @@ export class UserService {
   public async searchUsers(query: string): Promise<IUser[]> {
     if (!query) return this.findAll();
 
-    const regex = new RegExp(query, 'i');
+    const escaped = escapeRegex(query);
+    const regex = new RegExp(escaped, 'i');
 
     return this.userModel.find({
       $or: [{ email: regex }, { username: regex }],
