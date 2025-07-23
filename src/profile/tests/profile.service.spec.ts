@@ -206,18 +206,50 @@ describe('ProfileService', () => {
         { name: 'Test Profile 1' },
         { name: 'Test Profile 2' },
       ];
+      const total = 25;
       const execMock = jest.fn().mockResolvedValue(fakeProfiles);
       const limitMock = jest.fn().mockReturnValue({ exec: execMock });
       const skipMock = jest.fn().mockReturnValue({ limit: limitMock });
       const findMock = jest.fn().mockReturnValue({ skip: skipMock });
-      profileModel.find = findMock;
+      const countMock = jest.fn().mockResolvedValue(total);
+      profileModel.find = findMock as any;
+      profileModel.countDocuments = countMock as any;
 
       const result = await service.findAllWithPagination('user-id', 2, 10);
 
       expect(findMock).toHaveBeenCalledWith({ ownerId: 'user-id' });
       expect(skipMock).toHaveBeenCalledWith(10);
       expect(limitMock).toHaveBeenCalledWith(10);
-      expect(result).toEqual(fakeProfiles);
+      expect(countMock).toHaveBeenCalledWith({ ownerId: 'user-id' });
+      expect(result).toEqual({
+        data: fakeProfiles,
+        page: 2,
+        limit: 10,
+        total,
+        nextPage: 3,
+      });
+    });
+
+    it('should return nextPage as null if on last page', async () => {
+      const fakeProfiles = [{ name: 'Last Page' }];
+      const total = 11;
+      const execMock = jest.fn().mockResolvedValue(fakeProfiles);
+      const limitMock = jest.fn().mockReturnValue({ exec: execMock });
+      const skipMock = jest.fn().mockReturnValue({ limit: limitMock });
+      const findMock = jest.fn().mockReturnValue({ skip: skipMock });
+      const countMock = jest.fn().mockResolvedValue(total);
+      profileModel.find = findMock as any;
+      profileModel.countDocuments = countMock as any;
+
+      const result = await service.findAllWithPagination('user-id', 2, 10);
+
+      expect(result).toEqual({
+        data: fakeProfiles,
+        page: 2,
+        limit: 10,
+        total,
+        nextPage: null,
+      });
     });
 
     it('should calculate correct skip value for different page and limit', async () => {
@@ -225,7 +257,9 @@ describe('ProfileService', () => {
       const limitMock = jest.fn().mockReturnValue({ exec: execMock });
       const skipMock = jest.fn().mockReturnValue({ limit: limitMock });
       const findMock = jest.fn().mockReturnValue({ skip: skipMock });
-      profileModel.find = findMock;
+      const countMock = jest.fn().mockResolvedValue(0);
+      profileModel.find = findMock as any;
+      profileModel.countDocuments = countMock as any;
 
       await service.findAllWithPagination('user-id', 3, 5);
 

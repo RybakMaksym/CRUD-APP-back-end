@@ -24,6 +24,7 @@ import { UpdateProfileDTO } from '@/profile/dto/update-profile.dto';
 import { ProfileService } from '@/profile/profile.service';
 import { IProfile } from '@/profile/types/profile';
 import { IMessageReponse } from '@/types/message.interfaces';
+import { IPaginatedResponse } from '@/types/pagination.interfaces';
 
 @Controller('profile')
 export class ProfileController {
@@ -38,7 +39,7 @@ export class ProfileController {
     @GetUserId() myId: string,
     @Query('page') page = 1,
     @Query('limit') limit = DEFAULT_PROFILES_PAGE_LIMIT,
-  ): Promise<IProfile[]> {
+  ): Promise<IPaginatedResponse<IProfile>> {
     return this.profileService.findAllWithPagination(myId, +page, +limit);
   }
 

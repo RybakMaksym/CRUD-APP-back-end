@@ -10,6 +10,7 @@ import { USER_POPULATED_DATA } from '@/constants/populated-data.constants';
 import { CreateProfileDTO } from '@/profile/dto/create-profile.dto';
 import { Profile, ProfileDocument } from '@/profile/models/profile.model';
 import { IPopulatedProfiles, IProfile } from '@/profile/types/profile';
+import { IPaginatedResponse } from '@/types/pagination.interfaces';
 import { User, UserDocument } from '@/user/models/user.model';
 
 @Injectable()
@@ -101,9 +102,23 @@ export class ProfileService {
     ownerId: string,
     page: number,
     limit: number,
-  ): Promise<IProfile[]> {
+  ): Promise<IPaginatedResponse<IProfile>> {
     const skip = (page - 1) * limit;
 
-    return this.profileModel.find({ ownerId }).skip(skip).limit(limit).exec();
+    const [data, total] = await Promise.all([
+      this.profileModel.find({ ownerId }).skip(skip).limit(limit).exec(),
+      this.profileModel.countDocuments({ ownerId }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+    const nextPage = page < totalPages ? page + 1 : null;
+
+    return {
+      data,
+      page,
+      limit,
+      total,
+      nextPage,
+    };
   }
 }
