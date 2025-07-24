@@ -67,6 +67,40 @@ describe('ProfileController', () => {
     });
   });
 
+  describe('getProfilesByUserId()', () => {
+    it('should return profiles by userId', async () => {
+      const userId = 'user-id';
+      const expectedProfiles = [
+        {
+          _id: 'profile1',
+          name: 'John',
+          ownerId: userId,
+        },
+        {
+          _id: 'profile2',
+          name: 'Jane',
+          ownerId: userId,
+        },
+      ];
+      profileService.findAllByUserId.mockResolvedValue(expectedProfiles as any);
+
+      const result = await controller.getProfilesByUserId(userId);
+
+      expect(profileService.findAllByUserId).toHaveBeenCalledWith(userId);
+      expect(result).toEqual(expectedProfiles);
+    });
+
+    it('should return empty array if user has no profiles', async () => {
+      const userId = 'user-id';
+      profileService.findAllByUserId.mockResolvedValue([]);
+
+      const result = await controller.getProfilesByUserId(userId);
+
+      expect(profileService.findAllByUserId).toHaveBeenCalledWith(userId);
+      expect(result).toEqual([]);
+    });
+  });
+
   describe('create()', () => {
     it('should create a profile with avatar', async () => {
       const dto: CreateProfileDTO = {

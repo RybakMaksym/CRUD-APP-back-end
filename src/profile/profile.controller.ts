@@ -37,6 +37,14 @@ export class ProfileController {
     return this.profileService.findAllByUserId(myId);
   }
 
+  @Get('profiles/:id')
+  @UseGuards(AccessTokenGuard)
+  public async getProfilesByUserId(
+    @Param('id') userId: string,
+  ): Promise<IProfile[]> {
+    return this.profileService.findAllByUserId(userId);
+  }
+
   @Get('search')
   @UseGuards(AccessTokenGuard)
   public async searchProfiles(
@@ -46,11 +54,11 @@ export class ProfileController {
     return this.profileService.searchProfiles(query, myId);
   }
 
-  @Post('create')
+  @Post('create/:id')
   @UseGuards(AccessTokenGuard)
   @UseInterceptors(FileInterceptor('avatar', AVATAR_VALIDATION_OPTIONS))
   public async create(
-    @GetUserId() myId: string,
+    @Param('id') userId: string,
     @Body() dto: CreateProfileDTO,
     @UploadedFile() file: Express.Multer.File,
   ): Promise<IProfile> {
@@ -60,7 +68,7 @@ export class ProfileController {
       avatarUrl = await this.fileUploadService.uploadImage(file);
     }
 
-    return this.profileService.create(myId, {
+    return this.profileService.create(userId, {
       ...dto,
       avatarUrl,
     });
@@ -70,11 +78,11 @@ export class ProfileController {
   @UseGuards(AccessTokenGuard)
   @UseInterceptors(FileInterceptor('avatar', AVATAR_VALIDATION_OPTIONS))
   public async updateProfileById(
-    @Param('id') userId: string,
+    @Param('id') profileId: string,
     @Body() dto: UpdateProfileDTO,
     @UploadedFile() file?: Express.Multer.File,
   ): Promise<IProfile> {
-    const profile = await this.profileService.findById(userId);
+    const profile = await this.profileService.findById(profileId);
 
     if (!profile) {
       throw new NotFoundException('Profile not found');
@@ -84,7 +92,7 @@ export class ProfileController {
       ? await this.fileUploadService.uploadImage(file)
       : profile.avatarUrl;
 
-    return this.profileService.update(userId, {
+    return this.profileService.update(profileId, {
       name: dto.name ?? profile.name,
       birthDate: dto.birthDate ?? profile.birthDate,
       gender: dto.gender ?? profile.gender,
