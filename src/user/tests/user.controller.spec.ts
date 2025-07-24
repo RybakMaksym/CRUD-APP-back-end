@@ -74,6 +74,14 @@ describe('UserController', () => {
 
       expect(result).toEqual(users);
     });
+
+    it('should throw ForbiddenException if not admin', async () => {
+      userService.findById.mockResolvedValue({ role: Role.User });
+
+      await expect(controller.findAllUsers('user-id')).rejects.toThrow(
+        'You do not have access to this resource',
+      );
+    });
   });
 
   describe('searchUsers()', () => {
@@ -85,6 +93,14 @@ describe('UserController', () => {
       const result = await controller.searchUsers('admin-id', 'adm');
 
       expect(result).toEqual(users);
+    });
+
+    it('should throw ForbiddenException if not admin', async () => {
+      userService.findById.mockResolvedValue({ role: Role.User });
+
+      await expect(controller.searchUsers('user-id', 'adm')).rejects.toThrow(
+        'You do not have access to this resource',
+      );
     });
   });
 
@@ -141,6 +157,26 @@ describe('UserController', () => {
         'user-id',
         dto,
         file,
+      );
+
+      expect(result).toEqual({ email: 'new@mail.com' });
+    });
+
+    it('should update user without passing isAdmin', async () => {
+      const dto = { email: 'new@mail.com' };
+      userService.findById.mockResolvedValueOnce({ role: Role.Admin });
+      userService.findById.mockResolvedValueOnce({
+        role: Role.User,
+        username: 'old',
+        email: 'old@mail.com',
+      });
+      userService.isEmailTaken.mockResolvedValue(false);
+      userService.update.mockResolvedValue({ email: 'new@mail.com' });
+
+      const result = await controller.updateUserById(
+        'admin-id',
+        'user-id',
+        dto,
       );
 
       expect(result).toEqual({ email: 'new@mail.com' });

@@ -64,6 +64,25 @@ describe('UserService', () => {
       expect(model.create).toHaveBeenCalled();
       expect(result).toEqual(user);
     });
+
+    it('should create a admin', async () => {
+      const dto: CreateUserDTO = {
+        username: 'name',
+        email: 'admin@gmail.com',
+        password: '12345678',
+        isAdmin: true,
+      };
+      const admin = {
+        ...dto,
+        role: Role.Admin,
+      };
+      model.create.mockResolvedValue(admin);
+
+      const result = await userService.create(dto);
+
+      expect(model.create).toHaveBeenCalled();
+      expect(result).toEqual(admin);
+    });
   });
 
   describe('update()', () => {
@@ -126,20 +145,21 @@ describe('UserService', () => {
     });
   });
 
-  describe('findByEmail()', () => {
-    it('should return user by email', async () => {
-      const user = { email: 'email@gmail.com' };
+  describe('findById()', () => {
+    it('should return user by id', async () => {
+      const user = { _id: '123', email: 'test@mail.com' };
       model.findOne.mockReturnValue({
         exec: jest.fn().mockResolvedValue(user),
       });
 
-      const result = await userService.findByEmail(user.email);
+      const result = await userService.findById('123');
 
+      expect(model.findOne).toHaveBeenCalledWith({ _id: '123' });
       expect(result).toEqual(user);
     });
   });
 
-  describe('findById()', () => {
+  describe('findByEmail()', () => {
     it('should find user by email', async () => {
       const user = { email: 'test@mail.com' };
       model.findOne.mockReturnValue({
@@ -159,6 +179,20 @@ describe('UserService', () => {
       const result = await userService.findById('id');
 
       expect(result).toBeNull();
+    });
+  });
+
+  describe('findAll()', () => {
+    it('should return all users', async () => {
+      const users = [{ email: '1@mail.com' }, { email: '2@mail.com' }];
+      model.find.mockReturnValue({
+        exec: jest.fn().mockResolvedValue(users),
+      });
+
+      const result = await userService.findAll();
+
+      expect(model.find).toHaveBeenCalled();
+      expect(result).toEqual(users);
     });
   });
 
@@ -208,6 +242,18 @@ describe('UserService', () => {
       expect(model.find).toHaveBeenCalledWith({
         $or: [{ email: regex }, { username: regex }],
       });
+      expect(result).toEqual(users);
+    });
+
+    it('should return all users when query is empty', async () => {
+      const users = [{ email: '1@mail.com' }];
+      const findAllSpy = jest
+        .spyOn(userService, 'findAll')
+        .mockResolvedValue(users as any);
+
+      const result = await userService.searchUsers('');
+
+      expect(findAllSpy).toHaveBeenCalled();
       expect(result).toEqual(users);
     });
   });
