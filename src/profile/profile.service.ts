@@ -10,6 +10,7 @@ import { USER_POPULATED_DATA } from '@/constants/populated-data.constants';
 import { CreateProfileDTO } from '@/profile/dto/create-profile.dto';
 import { Profile, ProfileDocument } from '@/profile/models/profile.model';
 import { IPopulatedProfiles, IProfile } from '@/profile/types/profile';
+import { FilterableFields } from '@/types/filter.type';
 import { User, UserDocument } from '@/user/models/user.model';
 
 @Injectable()
@@ -91,6 +92,50 @@ export class ProfileService {
         { country: regex },
         { city: regex },
       ],
+    });
+  }
+
+  public async getFilterSuggestions(
+    field: FilterableFields,
+    query: string,
+    userId: string,
+  ): Promise<string[]> {
+    const regex = new RegExp(query, 'i');
+    const fieldName = field.toString();
+
+    return this.profileModel
+      .find({
+        ownerId: userId,
+        [fieldName]: regex,
+      })
+      .distinct(fieldName)
+      .exec() as Promise<string[]>;
+  }
+
+  public async filterByFields(
+    field: FilterableFields,
+    query: string,
+    userId: string,
+  ): Promise<IProfile[]> {
+    const regex = new RegExp(query, 'i');
+
+    return this.profileModel.find({
+      ownerId: userId,
+      [field.toString()]: regex,
+    });
+  }
+
+  public async filterByAge(userId: string): Promise<IProfile[]> {
+    const today = new Date();
+    const adultDay = new Date(
+      today.getFullYear() - 18,
+      today.getMonth(),
+      today.getDay(),
+    );
+
+    return this.profileModel.find({
+      ownerId: userId,
+      birthDate: { $lte: adultDay },
     });
   }
 }

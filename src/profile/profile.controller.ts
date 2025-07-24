@@ -22,6 +22,7 @@ import { CreateProfileDTO } from '@/profile/dto/create-profile.dto';
 import { UpdateProfileDTO } from '@/profile/dto/update-profile.dto';
 import { ProfileService } from '@/profile/profile.service';
 import { IProfile } from '@/profile/types/profile';
+import { FilterableFields, FilterFields } from '@/types/filter.type';
 import { IMessageReponse } from '@/types/message.interfaces';
 
 @Controller('profile')
@@ -52,6 +53,30 @@ export class ProfileController {
     @Query('query') query: string,
   ): Promise<IProfile[]> {
     return this.profileService.searchProfiles(query, myId);
+  }
+
+  @Get('suggestions')
+  @UseGuards(AccessTokenGuard)
+  public async getFilterSuggestions(
+    @GetUserId() myId: string,
+    @Query('field') field: FilterableFields,
+    @Query('query') query: string,
+  ): Promise<string[]> {
+    return this.profileService.getFilterSuggestions(field, query, myId);
+  }
+
+  @Get('filter')
+  @UseGuards(AccessTokenGuard)
+  public async filterProfiles(
+    @GetUserId() myId: string,
+    @Query('field') field: FilterFields,
+    @Query('query') query: string,
+  ): Promise<IProfile[]> {
+    if (field === 'age') {
+      return this.profileService.filterByAge(myId);
+    }
+
+    return this.profileService.filterByFields(field, query, myId);
   }
 
   @Post('create/:id')
