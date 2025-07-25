@@ -18,11 +18,13 @@ import { AccessTokenGuard } from '@/auth/guards/access-token.guard';
 import { AVATAR_VALIDATION_OPTIONS } from '@/constants/avatar-validation-options.constants';
 import { DEFAULT_PROFILES_PAGE_LIMIT } from '@/constants/profile.constants';
 import { GetUserId } from '@/decorators/get-user-id.decorator';
+import { FilterFields } from '@/enums/filter.enums';
 import { FileUploadService } from '@/file-upload/file-upload.service';
 import { CreateProfileDTO } from '@/profile/dto/create-profile.dto';
 import { UpdateProfileDTO } from '@/profile/dto/update-profile.dto';
 import { ProfileService } from '@/profile/profile.service';
 import { IProfile } from '@/profile/types/profile';
+import { FilterableFields } from '@/types/filterable-fileds.type';
 import { IMessageReponse } from '@/types/message.interfaces';
 import { IPaginatedResponse } from '@/types/pagination.interfaces';
 
@@ -58,6 +60,30 @@ export class ProfileController {
     @Query('query') query: string,
   ): Promise<IProfile[]> {
     return this.profileService.searchProfiles(query, myId);
+  }
+
+  @Get('suggestions')
+  @UseGuards(AccessTokenGuard)
+  public async getFilterSuggestions(
+    @GetUserId() myId: string,
+    @Query('field') field: FilterableFields,
+    @Query('query') query: string,
+  ): Promise<string[]> {
+    return this.profileService.getFilterSuggestions(field, query, myId);
+  }
+
+  @Get('filter')
+  @UseGuards(AccessTokenGuard)
+  public async filterProfiles(
+    @GetUserId() myId: string,
+    @Query('field') field: FilterFields,
+    @Query('query') query: string,
+  ): Promise<IProfile[]> {
+    if (field === 'age') {
+      return this.profileService.filterByAge(myId);
+    }
+
+    return this.profileService.filterByFields(field, query, myId);
   }
 
   @Post('create/:id')
