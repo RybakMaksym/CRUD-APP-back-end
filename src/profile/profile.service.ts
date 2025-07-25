@@ -167,4 +167,5 @@ export class ProfileService {
       ownerId: userId,
       birthDate: { $lte: adultDay },
     });
+  }
 }

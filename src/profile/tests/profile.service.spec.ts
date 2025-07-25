@@ -322,4 +322,5 @@ describe('ProfileService', () => {
       );
       expect(result).toEqual(mockProfiles);
     });
+  });
 });
