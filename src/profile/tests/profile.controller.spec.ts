@@ -2,6 +2,7 @@ import { NotFoundException } from '@nestjs/common';
 import type { TestingModule } from '@nestjs/testing';
 import { Test } from '@nestjs/testing';
 
+import { FilterFields } from '@/enums/filter.enums';
 import { Gender } from '@/enums/gender.enum';
 import { FileUploadService } from '@/file-upload/file-upload.service';
 import type { CreateProfileDTO } from '@/profile/dto/create-profile.dto';
@@ -16,6 +17,9 @@ const mockProfileService = {
   update: jest.fn(),
   delete: jest.fn(),
   searchProfiles: jest.fn(),
+  getFilterSuggestions: jest.fn(),
+  filterByFields: jest.fn(),
+  filterByAge: jest.fn(),
 };
 
 const mockFileUploadService = {
@@ -231,6 +235,60 @@ describe('ProfileController', () => {
 
       expect(profileService.searchProfiles).toHaveBeenCalledWith('', myId);
       expect(result).toEqual(expected);
+    });
+  });
+
+  describe('getFilterSuggestions()', () => {
+    it('should call service with correct params and return suggestions', async () => {
+      const suggestions = ['Kyiv', 'Kharkiv'];
+      mockProfileService.getFilterSuggestions.mockResolvedValue(suggestions);
+
+      const result = await controller.getFilterSuggestions(
+        'user-id',
+        'city',
+        'k',
+      );
+
+      expect(profileService.getFilterSuggestions).toHaveBeenCalledWith(
+        'city',
+        'k',
+        'user-id',
+      );
+      expect(result).toEqual(suggestions);
+    });
+  });
+
+  describe('filterProfiles()', () => {
+    it('should call filterByAge if field is "age"', async () => {
+      const profiles = [{ name: 'Adult' }];
+      mockProfileService.filterByAge.mockResolvedValue(profiles);
+
+      const result = await controller.filterProfiles(
+        'user-id',
+        FilterFields.AGE,
+        '',
+      );
+
+      expect(profileService.filterByAge).toHaveBeenCalledWith('user-id');
+      expect(result).toEqual(profiles);
+    });
+
+    it('should call filterByFields if field is "city" or "country"', async () => {
+      const profiles = [{ name: 'Kyiv' }];
+      mockProfileService.filterByFields.mockResolvedValue(profiles);
+
+      const result = await controller.filterProfiles(
+        'user-id',
+        FilterFields.CITY,
+        'k',
+      );
+
+      expect(profileService.filterByFields).toHaveBeenCalledWith(
+        'city',
+        'k',
+        'user-id',
+      );
+      expect(result).toEqual(profiles);
     });
   });
 });

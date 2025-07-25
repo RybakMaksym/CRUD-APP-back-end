@@ -199,4 +199,60 @@ describe('ProfileService', () => {
       expect(result).toEqual(mockProfiles);
     });
   });
+
+  describe('getFilterSuggestions()', () => {
+    it('should return distinct values for a field matching the query', async () => {
+      const mockSuggestions = ['Kyiv', 'Kharkiv'];
+      (profileModel.find as jest.Mock).mockReturnValue({
+        distinct: jest.fn().mockReturnValue({
+          exec: jest.fn().mockResolvedValue(mockSuggestions),
+        }),
+      });
+
+      const result = await service.getFilterSuggestions('city', 'k', 'user-id');
+
+      expect(profileModel.find).toHaveBeenCalledWith({
+        ownerId: 'user-id',
+        city: expect.any(RegExp),
+      });
+      expect(result).toEqual(mockSuggestions);
+    });
+  });
+
+  describe('filterByFields()', () => {
+    it('should return profiles filtered by field and query', async () => {
+      const mockProfiles = [{ city: 'Kyiv' }, { city: 'Kharkiv' }];
+      (profileModel.find as jest.Mock).mockResolvedValue(mockProfiles);
+
+      const result = await service.filterByFields('city', 'k', 'user-id');
+
+      expect(profileModel.find).toHaveBeenCalledWith({
+        ownerId: 'user-id',
+        city: expect.any(RegExp),
+      });
+      expect(result).toEqual(mockProfiles);
+    });
+  });
+
+  describe('filterByAge()', () => {
+    it('should return profiles where birthDate is at least 18 years ago', async () => {
+      const mockProfiles = [{ birthDate: new Date('2000-01-01') }];
+      (profileModel.find as jest.Mock).mockResolvedValue(mockProfiles);
+
+      const result = await service.filterByAge('user-id');
+
+      const expectedDate = new Date();
+      expectedDate.setFullYear(expectedDate.getFullYear() - 18);
+      expectedDate.setDate(expectedDate.getDate());
+      expect(profileModel.find).toHaveBeenCalledWith({
+        ownerId: 'user-id',
+        birthDate: { $lte: expect.any(Date) },
+      });
+      const actualQuery = (profileModel.find as jest.Mock).mock.calls[0][0];
+      expect(actualQuery.birthDate.$lte.getFullYear()).toBeLessThanOrEqual(
+        expectedDate.getFullYear(),
+      );
+      expect(result).toEqual(mockProfiles);
+    });
+  });
 });
