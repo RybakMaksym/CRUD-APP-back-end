@@ -16,6 +16,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 
 import { AccessTokenGuard } from '@/auth/guards/access-token.guard';
 import { AVATAR_VALIDATION_OPTIONS } from '@/constants/avatar-validation-options.constants';
+import { DEFAULT_PROFILES_PAGE_LIMIT } from '@/constants/profile.constants';
 import { GetUserId } from '@/decorators/get-user-id.decorator';
 import { FilterFields } from '@/enums/filter.enums';
 import { FileUploadService } from '@/file-upload/file-upload.service';
@@ -25,6 +26,7 @@ import { ProfileService } from '@/profile/profile.service';
 import { IProfile } from '@/profile/types/profile';
 import { FilterableFields } from '@/types/filterable-fileds.type';
 import { IMessageReponse } from '@/types/message.interfaces';
+import { IPaginatedResponse } from '@/types/pagination.interfaces';
 
 @Controller('profile')
 export class ProfileController {
@@ -35,8 +37,12 @@ export class ProfileController {
 
   @Get('my-profiles')
   @UseGuards(AccessTokenGuard)
-  public async getMyProfiles(@GetUserId() myId: string): Promise<IProfile[]> {
-    return this.profileService.findAllByUserId(myId);
+  public async getMyProfiles(
+    @GetUserId() myId: string,
+    @Query('page') page = 1,
+    @Query('limit') limit = DEFAULT_PROFILES_PAGE_LIMIT,
+  ): Promise<IPaginatedResponse<IProfile>> {
+    return this.profileService.findAllWithPagination(myId, +page, +limit);
   }
 
   @Get('profiles/:id')

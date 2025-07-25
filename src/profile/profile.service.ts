@@ -7,10 +7,12 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, UpdateQuery } from 'mongoose';
 
 import { USER_POPULATED_DATA } from '@/constants/populated-data.constants';
+import { escapeRegex } from '@/helpers/escape-regex';
 import { CreateProfileDTO } from '@/profile/dto/create-profile.dto';
 import { Profile, ProfileDocument } from '@/profile/models/profile.model';
 import { IPopulatedProfiles, IProfile } from '@/profile/types/profile';
 import { FilterableFields } from '@/types/filterable-fileds.type';
+import { IPaginatedResponse } from '@/types/pagination.interfaces';
 import { User, UserDocument } from '@/user/models/user.model';
 
 @Injectable()
@@ -58,6 +60,9 @@ export class ProfileService {
 
     try {
       await this.profileModel.findByIdAndDelete(id);
+      await this.userModel.findByIdAndUpdate(profile.ownerId, {
+        $pull: { profiles: profile.id },
+      });
     } catch {
       throw new InternalServerErrorException('Failed to delete profile');
     }
@@ -82,7 +87,8 @@ export class ProfileService {
   ): Promise<IProfile[]> {
     if (!query) return this.findAllByUserId(userId);
 
-    const regex = new RegExp(query, 'i');
+    const escaped = escapeRegex(query);
+    const regex = new RegExp(escaped, 'i');
 
     return this.profileModel.find({
       ownerId: userId,
@@ -93,6 +99,30 @@ export class ProfileService {
         { city: regex },
       ],
     });
+  }
+
+  public async findAllWithPagination(
+    ownerId: string,
+    page: number,
+    limit: number,
+  ): Promise<IPaginatedResponse<IProfile>> {
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await Promise.all([
+      this.profileModel.find({ ownerId }).skip(skip).limit(limit).exec(),
+      this.profileModel.countDocuments({ ownerId }),
+    ]);
+
+    const totalPages = Math.ceil(total / limit);
+    const nextPage = page < totalPages ? page + 1 : null;
+
+    return {
+      data,
+      page,
+      limit,
+      total,
+      nextPage,
+    };
   }
 
   public async getFilterSuggestions(
@@ -137,5 +167,4 @@ export class ProfileService {
       ownerId: userId,
       birthDate: { $lte: adultDay },
     });
-  }
 }

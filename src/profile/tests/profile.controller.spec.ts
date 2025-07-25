@@ -12,6 +12,7 @@ import { ProfileService } from '@/profile/profile.service';
 
 const mockProfileService = {
   findAllByUserId: jest.fn(),
+  findAllWithPagination: jest.fn(),
   create: jest.fn(),
   findById: jest.fn(),
   update: jest.fn(),
@@ -60,14 +61,36 @@ describe('ProfileController', () => {
   });
 
   describe('getMyProfiles()', () => {
-    it('should return all profiles of user', async () => {
-      const profiles = [{ name: 'Profile1' }];
-      profileService.findAllByUserId.mockResolvedValue(profiles as any);
+    it('should return paginated profiles of user', async () => {
+      const paginatedResponse = {
+        data: [
+          {
+            id: 'profile-id',
+            name: 'Profile1',
+            gender: Gender.Male,
+            birthDate: new Date(),
+            country: 'Ukraine',
+            city: 'Kyiv',
+            ownerId: 'user-id',
+          },
+        ],
+        page: 1,
+        limit: 8,
+        total: 1,
+        nextPage: null,
+      };
+      profileService.findAllWithPagination.mockResolvedValue(
+        paginatedResponse as any,
+      );
 
-      const result = await controller.getMyProfiles('user-id');
+      const result = await controller.getMyProfiles('user-id', 1, 8);
 
-      expect(profileService.findAllByUserId).toHaveBeenCalledWith('user-id');
-      expect(result).toEqual(profiles);
+      expect(profileService.findAllWithPagination).toHaveBeenCalledWith(
+        'user-id',
+        1,
+        8,
+      );
+      expect(result).toEqual(paginatedResponse);
     });
   });
 
