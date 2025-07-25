@@ -1,3 +1,3 @@
-export type FilterFields = 'country' | 'city' | 'age';
+import type { FilterFields } from '@/enums/filter.enums';
 
 export type FilterableFields = Omit<FilterFields, 'age'>;

@@ -10,7 +10,7 @@ import { USER_POPULATED_DATA } from '@/constants/populated-data.constants';
 import { CreateProfileDTO } from '@/profile/dto/create-profile.dto';
 import { Profile, ProfileDocument } from '@/profile/models/profile.model';
 import { IPopulatedProfiles, IProfile } from '@/profile/types/profile';
-import { FilterableFields } from '@/types/filter.type';
+import { FilterableFields } from '@/types/filterable-fileds.type';
 import { User, UserDocument } from '@/user/models/user.model';
 
 @Injectable()
