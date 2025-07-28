@@ -49,8 +49,10 @@ export class ProfileController {
   @UseGuards(AccessTokenGuard)
   public async getProfilesByUserId(
     @Param('id') userId: string,
-  ): Promise<IProfile[]> {
-    return this.profileService.findAllByUserId(userId);
+    @Query('page') page = 1,
+    @Query('limit') limit = DEFAULT_PROFILES_PAGE_LIMIT,
+  ): Promise<IPaginatedResponse<IProfile>> {
+    return this.profileService.findAllWithPagination(userId, +page, +limit);
   }
 
   @Get('search')
