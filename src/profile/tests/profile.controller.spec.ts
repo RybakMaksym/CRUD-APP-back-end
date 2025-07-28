@@ -21,6 +21,7 @@ const mockProfileService = {
   getFilterSuggestions: jest.fn(),
   filterByFields: jest.fn(),
   filterByAge: jest.fn(),
+  getProfilesStats: jest.fn(),
 };
 
 const mockFileUploadService = {
@@ -312,6 +313,22 @@ describe('ProfileController', () => {
         'user-id',
       );
       expect(result).toEqual(profiles);
+    });
+  });
+
+  describe('getProfilesStats()', () => {
+    it('should return stats from the service', async () => {
+      const mockStats = {
+        totalUsers: 10,
+        totalProfiles: 8,
+        totalAdults: 5,
+      };
+      mockProfileService.getProfilesStats.mockResolvedValue(mockStats);
+
+      const result = await controller.getProfilesStats();
+
+      expect(profileService.getProfilesStats).toHaveBeenCalled();
+      expect(result).toEqual(mockStats);
     });
   });
 });
