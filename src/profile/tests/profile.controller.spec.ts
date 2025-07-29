@@ -11,7 +11,6 @@ import { ProfileController } from '@/profile/profile.controller';
 import { ProfileService } from '@/profile/profile.service';
 
 const mockProfileService = {
-  findAllByUserId: jest.fn(),
   findAllWithPagination: jest.fn(),
   create: jest.fn(),
   findById: jest.fn(),
@@ -96,36 +95,57 @@ describe('ProfileController', () => {
   });
 
   describe('getProfilesByUserId()', () => {
-    it('should return profiles by userId', async () => {
+    it('should return paginated profiles by userId', async () => {
       const userId = 'user-id';
-      const expectedProfiles = [
-        {
-          _id: 'profile1',
-          name: 'John',
-          ownerId: userId,
-        },
-        {
-          _id: 'profile2',
-          name: 'Jane',
-          ownerId: userId,
-        },
-      ];
-      profileService.findAllByUserId.mockResolvedValue(expectedProfiles as any);
+      const page = 2;
+      const limit = 5;
+      const paginatedProfiles = {
+        data: [
+          { _id: 'profile1', name: 'John', ownerId: userId },
+          { _id: 'profile2', name: 'Jane', ownerId: userId },
+        ],
+        page,
+        limit,
+        total: 10,
+        nextPage: 3,
+      };
+      profileService.findAllWithPagination.mockResolvedValue(
+        paginatedProfiles as any,
+      );
 
-      const result = await controller.getProfilesByUserId(userId);
+      const result = await controller.getProfilesByUserId(userId, page, limit);
 
-      expect(profileService.findAllByUserId).toHaveBeenCalledWith(userId);
-      expect(result).toEqual(expectedProfiles);
+      expect(profileService.findAllWithPagination).toHaveBeenCalledWith(
+        userId,
+        page,
+        limit,
+      );
+      expect(result).toEqual(paginatedProfiles);
     });
 
-    it('should return empty array if user has no profiles', async () => {
+    it('should return empty data if no profiles found', async () => {
       const userId = 'user-id';
-      profileService.findAllByUserId.mockResolvedValue([]);
+      const page = 1;
+      const limit = 10;
+      const emptyPaginated = {
+        data: [],
+        page,
+        limit,
+        total: 0,
+        nextPage: null,
+      };
+      profileService.findAllWithPagination.mockResolvedValue(
+        emptyPaginated as any,
+      );
 
-      const result = await controller.getProfilesByUserId(userId);
+      const result = await controller.getProfilesByUserId(userId, page, limit);
 
-      expect(profileService.findAllByUserId).toHaveBeenCalledWith(userId);
-      expect(result).toEqual([]);
+      expect(profileService.findAllWithPagination).toHaveBeenCalledWith(
+        userId,
+        page,
+        limit,
+      );
+      expect(result).toEqual(emptyPaginated);
     });
   });
 
