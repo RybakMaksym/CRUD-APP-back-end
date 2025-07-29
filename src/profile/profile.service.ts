@@ -13,6 +13,7 @@ import { Profile, ProfileDocument } from '@/profile/models/profile.model';
 import { IPopulatedProfiles, IProfile } from '@/profile/types/profile';
 import { FilterableFields } from '@/types/filterable-fileds.type';
 import { IPaginatedResponse } from '@/types/pagination.interfaces';
+import { IStatsResponse } from '@/types/response.interfaces';
 import { User, UserDocument } from '@/user/models/user.model';
 
 @Injectable()
@@ -167,5 +168,30 @@ export class ProfileService {
       ownerId: userId,
       birthDate: { $lte: adultDay },
     });
+  }
+
+  public async getProfilesStats(): Promise<IStatsResponse> {
+    const totalUsers = await this.userModel.countDocuments().exec();
+    const totalProfiles = await this.profileModel.countDocuments().exec();
+
+    const today = new Date();
+    const adultDay = new Date(
+      today.getFullYear() - 18,
+      today.getMonth(),
+      today.getDay(),
+    );
+
+    const totalAdults = await this.profileModel
+      .find({
+        birthDate: { $lte: adultDay },
+      })
+      .countDocuments()
+      .exec();
+
+    return {
+      totalUsers,
+      totalProfiles,
+      totalAdults,
+    };
   }
 }

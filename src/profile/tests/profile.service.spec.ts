@@ -15,11 +15,13 @@ const mockProfileModel = {
   findByIdAndUpdate: jest.fn(),
   findById: jest.fn(),
   findByIdAndDelete: jest.fn(),
+  countDocuments: jest.fn(),
 };
 
 const mockUserModel = {
   findByIdAndUpdate: jest.fn(),
   findById: jest.fn(),
+  countDocuments: jest.fn(),
 };
 
 describe('ProfileService', () => {
@@ -321,6 +323,42 @@ describe('ProfileService', () => {
         expectedDate.getFullYear(),
       );
       expect(result).toEqual(mockProfiles);
+    });
+  });
+
+  describe('getProfilesStats()', () => {
+    it('should return totalUsers, totalProfiles and totalAdults', async () => {
+      const mockTotalUsers = 100;
+      const mockTotalProfiles = 80;
+      const mockTotalAdults = 60;
+      const execTotalUsers = jest.fn().mockResolvedValue(mockTotalUsers);
+      const execTotalProfiles = jest.fn().mockResolvedValue(mockTotalProfiles);
+      const execTotalAdults = jest.fn().mockResolvedValue(mockTotalAdults);
+      const findAdultsMock = jest.fn().mockReturnValue({
+        countDocuments: jest.fn().mockReturnValue({
+          exec: execTotalAdults,
+        }),
+      });
+      (userModel.countDocuments as jest.Mock).mockReturnValue({
+        exec: execTotalUsers,
+      });
+      (profileModel.countDocuments as jest.Mock).mockReturnValue({
+        exec: execTotalProfiles,
+      });
+      (profileModel.find as jest.Mock).mockImplementation(findAdultsMock);
+
+      const result = await service.getProfilesStats();
+
+      expect(userModel.countDocuments).toHaveBeenCalled();
+      expect(profileModel.countDocuments).toHaveBeenCalled();
+      expect(profileModel.find).toHaveBeenCalledWith({
+        birthDate: { $lte: expect.any(Date) },
+      });
+      expect(result).toEqual({
+        totalUsers: mockTotalUsers,
+        totalProfiles: mockTotalProfiles,
+        totalAdults: mockTotalAdults,
+      });
     });
   });
 });

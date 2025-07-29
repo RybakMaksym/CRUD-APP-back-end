@@ -27,6 +27,7 @@ import { IProfile } from '@/profile/types/profile';
 import { FilterableFields } from '@/types/filterable-fileds.type';
 import { IMessageReponse } from '@/types/message.interfaces';
 import { IPaginatedResponse } from '@/types/pagination.interfaces';
+import { IStatsResponse } from '@/types/response.interfaces';
 
 @Controller('profile')
 export class ProfileController {
@@ -84,6 +85,12 @@ export class ProfileController {
     }
 
     return this.profileService.filterByFields(field, query, myId);
+  }
+
+  @Get('stats')
+  @UseGuards(AccessTokenGuard)
+  public async getProfilesStats(): Promise<IStatsResponse> {
+    return this.profileService.getProfilesStats();
   }
 
   @Post('create/:id')

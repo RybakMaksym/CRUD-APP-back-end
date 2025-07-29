@@ -16,6 +16,7 @@ describe('ProfileController (e2e)', () => {
 
   let accessToken: string;
   let profileId: string;
+  let userId: string;
 
   beforeAll(async () => {
     process.env.DB_CONNECTION_URI =
@@ -37,11 +38,12 @@ describe('ProfileController (e2e)', () => {
     server = app.getHttpServer();
     dbConnection = moduleFixture.get<Connection>(getConnectionToken());
 
-    await request(server).post('/auth/register').send({
+    const registerRes = await request(server).post('/auth/register').send({
       email: 'test@example.com',
       username: 'TestUser',
       password: 'Password123!',
     });
+    userId = registerRes.body.user.id;
 
     const loginResponse = await request(server).post('/auth/log-in').send({
       email: 'test@example.com',
@@ -57,9 +59,9 @@ describe('ProfileController (e2e)', () => {
     await app.close();
   });
 
-  it('/profile/create (POST) - create profile', async () => {
+  it('/profile/create/:id (POST) - create profile', async () => {
     const res = await request(server)
-      .post('/profile/create')
+      .post(`/profile/create/${userId}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
         name: 'John',
@@ -72,34 +74,81 @@ describe('ProfileController (e2e)', () => {
     expect(res.status).toBe(201);
     expect(res.body).toHaveProperty('id');
     expect(res.body.name).toBe('John');
+
     profileId = res.body.id;
   });
 
-  it('/profile/my-profiles (GET) - get user profiles', async () => {
+  it('/profile/my-profiles (GET)', async () => {
     const res = await request(server)
       .get('/profile/my-profiles')
       .set('Authorization', `Bearer ${accessToken}`);
 
     expect(res.status).toBe(200);
-    expect(Array.isArray(res.body)).toBe(true);
+    expect(res.body.data.length).toBeGreaterThan(0);
+  });
+
+  it('/profile/profiles/:id (GET) - get profiles by user id', async () => {
+    const res = await request(server)
+      .get(`/profile/profiles/${userId}`)
+      .set('Authorization', `Bearer ${accessToken}`);
+
+    expect(res.status).toBe(200);
     expect(res.body.length).toBeGreaterThan(0);
   });
 
-  it('/profile/update/:id (PATCH) - update profile', async () => {
+  it('/profile/update/:id (PATCH)', async () => {
     const res = await request(server)
       .patch(`/profile/update/${profileId}`)
       .set('Authorization', `Bearer ${accessToken}`)
       .send({
-        name: 'Updated Name',
+        name: 'UpdatedName',
         city: 'Lviv',
       });
 
     expect(res.status).toBe(200);
-    expect(res.body.name).toBe('Updated Name');
+    expect(res.body.name).toBe('UpdatedName');
     expect(res.body.city).toBe('Lviv');
   });
 
-  it('/profile/:id (DELETE) - delete profile', async () => {
+  it('/profile/search (GET)', async () => {
+    const res = await request(server)
+      .get(`/profile/search?query=Updated`)
+      .set('Authorization', `Bearer ${accessToken}`);
+
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+  });
+
+  it('/profile/suggestions (GET)', async () => {
+    const res = await request(server)
+      .get('/profile/suggestions?field=city&query=L')
+      .set('Authorization', `Bearer ${accessToken}`);
+
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+  });
+
+  it('/profile/filter (GET)', async () => {
+    const res = await request(server)
+      .get('/profile/filter?field=city&query=Lviv')
+      .set('Authorization', `Bearer ${accessToken}`);
+
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+  });
+
+  it('/profile/stats (GET)', async () => {
+    const res = await request(server)
+      .get('/profile/stats')
+      .set('Authorization', `Bearer ${accessToken}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('totalUsers');
+    expect(res.body).toHaveProperty('totalProfiles');
+    expect(res.body).toHaveProperty('totalAdults');
+  });
+
+  it('/profile/:id (DELETE)', async () => {
     const res = await request(server)
       .delete(`/profile/${profileId}`)
       .set('Authorization', `Bearer ${accessToken}`);
@@ -108,12 +157,12 @@ describe('ProfileController (e2e)', () => {
     expect(res.body).toEqual({ message: 'Profile deleted successfuly' });
   });
 
-  it('/profile/my-profiles (GET) - should return empty after delete', async () => {
+  it('/profile/my-profiles (GET) - should be empty', async () => {
     const res = await request(server)
       .get('/profile/my-profiles')
       .set('Authorization', `Bearer ${accessToken}`);
 
     expect(res.status).toBe(200);
-    expect(res.body).toEqual([]);
+    expect(res.body.data.length).toBe(0);
   });
 });
