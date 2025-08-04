@@ -8,6 +8,7 @@ import { Test } from '@nestjs/testing';
 
 import { Role } from '@/enums/role.enum';
 import { FileUploadService } from '@/file-upload/file-upload.service';
+import { NotificationService } from '@/notification/notification.service';
 import { UserController } from '@/user/user.controller';
 import { UserService } from '@/user/user.service';
 
@@ -25,6 +26,10 @@ const mockFileUploadService = () => ({
   uploadImage: jest.fn(),
 });
 
+const mockNotificationService = () => ({
+  sendNotification: jest.fn(),
+});
+
 describe('UserController', () => {
   let controller: UserController;
   let userService: ReturnType<typeof mockUserService>;
@@ -36,6 +41,7 @@ describe('UserController', () => {
       providers: [
         { provide: UserService, useFactory: mockUserService },
         { provide: FileUploadService, useFactory: mockFileUploadService },
+        { provide: NotificationService, useFactory: mockNotificationService },
       ],
     }).compile();
 
@@ -137,6 +143,8 @@ describe('UserController', () => {
 
   describe('updateUserById()', () => {
     it('should update user with avatar', async () => {
+      const adminId = '64a123456789abcdef123456';
+      const userId = '64a987654321fedcba654321';
       const dto = { email: 'new@mail.com', isAdmin: true };
       const file = {
         buffer: Buffer.from(''),
@@ -153,8 +161,8 @@ describe('UserController', () => {
       userService.update.mockResolvedValue({ email: 'new@mail.com' });
 
       const result = await controller.updateUserById(
-        'admin-id',
-        'user-id',
+        adminId,
+        userId,
         dto,
         file,
       );

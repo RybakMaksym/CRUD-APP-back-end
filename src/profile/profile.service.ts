@@ -52,7 +52,7 @@ export class ProfileService {
     }
   }
 
-  public async delete(id: string): Promise<void> {
+  public async delete(id: string): Promise<IProfile> {
     const profile = await this.profileModel.findById(id);
 
     if (!profile) {
@@ -60,10 +60,11 @@ export class ProfileService {
     }
 
     try {
-      await this.profileModel.findByIdAndDelete(id);
       await this.userModel.findByIdAndUpdate(profile.ownerId, {
         $pull: { profiles: profile.id },
       });
+
+      return this.profileModel.findByIdAndDelete(id);
     } catch {
       throw new InternalServerErrorException('Failed to delete profile');
     }

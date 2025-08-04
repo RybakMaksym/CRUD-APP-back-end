@@ -14,13 +14,16 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Types } from 'mongoose';
 
 import { AccessTokenGuard } from '@/auth/guards/access-token.guard';
 import { AVATAR_VALIDATION_OPTIONS } from '@/constants/avatar-validation-options.constants';
 import { DEFAULT_USERS_PAGE_LIMIT } from '@/constants/user.constants';
 import { GetUserId } from '@/decorators/get-user-id.decorator';
+import { NotificationType } from '@/enums/notification.enums';
 import { Role } from '@/enums/role.enum';
 import { FileUploadService } from '@/file-upload/file-upload.service';
+import { NotificationService } from '@/notification/notification.service';
 import { IMessageReponse } from '@/types/message.interfaces';
 import { ITotalResponse } from '@/types/response.interfaces';
 import { UpdateUserDTO } from '@/user/dto/update-user.dto';
@@ -32,6 +35,7 @@ export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly fileUploadService: FileUploadService,
+    private readonly notificationService: NotificationService,
   ) {}
 
   @Get('total')
@@ -129,12 +133,19 @@ export class UserController {
       throw new BadRequestException('This email already taken');
     }
 
-    const role =
-      dto.isAdmin !== undefined
-        ? dto.isAdmin
-          ? Role.Admin
-          : Role.User
-        : user.role;
+    let role = user.role;
+
+    if (dto.isAdmin) {
+      role = dto.isAdmin ? Role.Admin : Role.User;
+
+      if (role === Role.Admin && myId !== userId) {
+        await this.notificationService.sendNotification({
+          type: NotificationType.MADE_ADMIN,
+          message: `You were made an admin by ${admin.username}`,
+          ownerId: new Types.ObjectId(userId),
+        });
+      }
+    }
 
     const avatarUrl = file
       ? await this.fileUploadService.uploadImage(file)
