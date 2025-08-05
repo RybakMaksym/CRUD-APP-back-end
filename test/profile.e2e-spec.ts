@@ -93,7 +93,7 @@ describe('ProfileController (e2e)', () => {
       .set('Authorization', `Bearer ${accessToken}`);
 
     expect(res.status).toBe(200);
-    expect(res.body.length).toBeGreaterThan(0);
+    expect(res.body.data.length).toBeGreaterThan(0);
   });
 
   it('/profile/update/:id (PATCH)', async () => {
