@@ -1,15 +1,16 @@
 import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
-import { INotification } from '@/notification/types/notification';
+import { NotificationEvents } from '@/enums/notification.enums';
+import { INotification } from '@/notification/notification.types';
 
 @WebSocketGateway({ cors: true })
-export class NotificationGetaway {
+export class NotificationGateway {
   @WebSocketServer()
-  server: Server;
+  private readonly server: Server;
 
   public sendNotification(userId: string, payload: INotification): void {
-    this.server.to(userId).emit('notification', payload);
+    this.server.to(userId).emit(NotificationEvents.NOTIFICATION, payload);
   }
 
   public handleConnection(socket: Socket): void {

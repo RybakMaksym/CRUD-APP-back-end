@@ -21,11 +21,12 @@ import { GetUserId } from '@/decorators/get-user-id.decorator';
 import { FilterFields } from '@/enums/filter.enums';
 import { NotificationType } from '@/enums/notification.enums';
 import { FileUploadService } from '@/file-upload/file-upload.service';
+import { NotificationGateway } from '@/notification/notification.gateway';
 import { NotificationService } from '@/notification/notification.service';
 import { CreateProfileDTO } from '@/profile/dto/create-profile.dto';
 import { UpdateProfileDTO } from '@/profile/dto/update-profile.dto';
 import { ProfileService } from '@/profile/profile.service';
-import { IProfile } from '@/profile/types/profile';
+import { IProfile } from '@/profile/profile.types';
 import { FilterableFields } from '@/types/filterable-fileds.type';
 import { IMessageReponse } from '@/types/message.interfaces';
 import { IPaginatedResponse } from '@/types/pagination.interfaces';
@@ -39,6 +40,7 @@ export class ProfileController {
     private readonly fileUploadService: FileUploadService,
     private readonly userService: UserService,
     private readonly notificationService: NotificationService,
+    private readonly notificationGateway: NotificationGateway,
   ) {}
 
   @Get('my-profiles')
@@ -142,11 +144,16 @@ export class ProfileController {
     if (myId !== profile.ownerId.toString()) {
       const admin = await this.userService.findById(myId);
 
-      await this.notificationService.sendNotification({
+      const notification = await this.notificationService.createNotification({
         type: NotificationType.PROFILE_EDIT,
         message: `Profile ${profile.name} was edited by ${admin.username}`,
         ownerId: profile.ownerId,
       });
+
+      this.notificationGateway.sendNotification(
+        profile.ownerId.toString(),
+        notification,
+      );
     }
 
     return this.profileService.update(profileId, {
@@ -170,11 +177,16 @@ export class ProfileController {
     if (myId !== profile.ownerId.toString()) {
       const admin = await this.userService.findById(myId);
 
-      await this.notificationService.sendNotification({
+      const notification = await this.notificationService.createNotification({
         type: NotificationType.PROFILE_DELETE,
         message: `Profile ${profile.name} was deleted by ${admin.username}`,
         ownerId: profile.ownerId,
       });
+
+      this.notificationGateway.sendNotification(
+        profile.ownerId.toString(),
+        notification,
+      );
     }
 
     return { message: 'Profile deleted successfuly' };

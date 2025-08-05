@@ -4,7 +4,7 @@ import { Test } from '@nestjs/testing';
 
 import { TokenController } from '@/token/token.controller';
 import { TokenService } from '@/token/token.service';
-import type { ITokens } from '@/token/types/tokens';
+import type { ITokens } from '@/token/tokens.types';
 
 const mockTokenService = {
   verifyToken: jest.fn(),

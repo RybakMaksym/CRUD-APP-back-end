@@ -23,12 +23,13 @@ import { GetUserId } from '@/decorators/get-user-id.decorator';
 import { NotificationType } from '@/enums/notification.enums';
 import { Role } from '@/enums/role.enum';
 import { FileUploadService } from '@/file-upload/file-upload.service';
+import { NotificationGateway } from '@/notification/notification.gateway';
 import { NotificationService } from '@/notification/notification.service';
 import { IMessageReponse } from '@/types/message.interfaces';
 import { ITotalResponse } from '@/types/response.interfaces';
 import { UpdateUserDTO } from '@/user/dto/update-user.dto';
-import { IUser } from '@/user/types/user';
 import { UserService } from '@/user/user.service';
+import { IUser } from '@/user/user.types';
 
 @Controller('user')
 export class UserController {
@@ -36,6 +37,7 @@ export class UserController {
     private readonly userService: UserService,
     private readonly fileUploadService: FileUploadService,
     private readonly notificationService: NotificationService,
+    private readonly notificationGateway: NotificationGateway,
   ) {}
 
   @Get('total')
@@ -139,11 +141,13 @@ export class UserController {
       role = dto.isAdmin ? Role.Admin : Role.User;
 
       if (role === Role.Admin && myId !== userId) {
-        await this.notificationService.sendNotification({
+        const notification = await this.notificationService.createNotification({
           type: NotificationType.MADE_ADMIN,
           message: `You were made an admin by ${admin.username}`,
           ownerId: new Types.ObjectId(userId),
         });
+
+        this.notificationGateway.sendNotification(userId, notification);
       }
     }
 

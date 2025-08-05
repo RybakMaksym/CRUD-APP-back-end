@@ -11,7 +11,7 @@ import { Role } from '@/enums/role.enum';
 import { escapeRegex } from '@/helpers/escape-regex';
 import { hash } from '@/helpers/hash';
 import { User, UserDocument } from '@/user/models/user.model';
-import { IUser } from '@/user/types/user';
+import { IUser } from '@/user/user.types';
 
 @Injectable()
 export class UserService {

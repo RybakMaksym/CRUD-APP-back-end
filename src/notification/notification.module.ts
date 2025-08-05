@@ -6,7 +6,7 @@ import {
   NotificationSchema,
 } from '@/notification/models/notification.model';
 import { NotificationController } from '@/notification/notification.controller';
-import { NotificationGetaway } from '@/notification/notification.getaway';
+import { NotificationGateway } from '@/notification/notification.gateway';
 import { NotificationService } from '@/notification/notification.service';
 
 @Module({
@@ -16,7 +16,7 @@ import { NotificationService } from '@/notification/notification.service';
     ]),
   ],
   controllers: [NotificationController],
-  providers: [NotificationService, NotificationGetaway],
-  exports: [NotificationService],
+  providers: [NotificationService, NotificationGateway],
+  exports: [NotificationService, NotificationGateway],
 })
 export class NotificationModule {}

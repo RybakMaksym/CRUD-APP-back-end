@@ -2,21 +2,21 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
 import { Gender } from '@/enums/gender.enum';
-import { IProfile } from '@/profile/types/profile';
+import { IProfile } from '@/profile/profile.types';
 
 export type ProfileDocument = Profile & Document;
 
 @Schema({
   timestamps: true,
   toJSON: {
-    transform: (_, ret) => {
-      ret.id = ret._id?.toString();
-      delete ret._id;
-      delete ret.__v;
-      delete ret.createdAt;
-      delete ret.updatedAt;
+    transform: (_, returnedObject) => {
+      returnedObject.id = returnedObject._id?.toString();
+      delete returnedObject._id;
+      delete returnedObject.__v;
+      delete returnedObject.createdAt;
+      delete returnedObject.updatedAt;
 
-      return ret;
+      return returnedObject;
     },
   },
 })

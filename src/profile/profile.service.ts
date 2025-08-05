@@ -10,7 +10,7 @@ import { USER_POPULATED_DATA } from '@/constants/populated-data.constants';
 import { escapeRegex } from '@/helpers/escape-regex';
 import { CreateProfileDTO } from '@/profile/dto/create-profile.dto';
 import { Profile, ProfileDocument } from '@/profile/models/profile.model';
-import { IPopulatedProfiles, IProfile } from '@/profile/types/profile';
+import { IPopulatedProfiles, IProfile } from '@/profile/profile.types';
 import { FilterableFields } from '@/types/filterable-fileds.type';
 import { IPaginatedResponse } from '@/types/pagination.interfaces';
 import { IStatsResponse } from '@/types/response.interfaces';

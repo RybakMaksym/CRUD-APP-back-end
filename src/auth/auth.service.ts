@@ -9,8 +9,8 @@ import { LogInUserDTO } from '@/auth/dto/log-in-user.dto';
 import { IAuthResponse } from '@/auth/types/auth.response';
 import { compareHash } from '@/helpers/hash';
 import { TokenService } from '@/token/token.service';
-import { IUser } from '@/user/types/user';
 import { UserService } from '@/user/user.service';
+import { IUser } from '@/user/user.types';
 
 @Injectable()
 export class AuthService {

@@ -8,6 +8,7 @@ import { Test } from '@nestjs/testing';
 
 import { Role } from '@/enums/role.enum';
 import { FileUploadService } from '@/file-upload/file-upload.service';
+import { NotificationGateway } from '@/notification/notification.gateway';
 import { NotificationService } from '@/notification/notification.service';
 import { UserController } from '@/user/user.controller';
 import { UserService } from '@/user/user.service';
@@ -27,6 +28,10 @@ const mockFileUploadService = () => ({
 });
 
 const mockNotificationService = () => ({
+  createNotification: jest.fn(),
+});
+
+const mockNotificationGateway = () => ({
   sendNotification: jest.fn(),
 });
 
@@ -42,6 +47,7 @@ describe('UserController', () => {
         { provide: UserService, useFactory: mockUserService },
         { provide: FileUploadService, useFactory: mockFileUploadService },
         { provide: NotificationService, useFactory: mockNotificationService },
+        { provide: NotificationGateway, useFactory: mockNotificationGateway },
       ],
     }).compile();
 

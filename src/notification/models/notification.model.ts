@@ -2,20 +2,20 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
 import { NotificationType } from '@/enums/notification.enums';
-import { INotification } from '@/notification/types/notification';
+import { INotification } from '@/notification/notification.types';
 
 export type NotificationDocument = Notification & Document;
 
 @Schema({
   timestamps: true,
   toJSON: {
-    transform: (_, ret) => {
-      ret.id = ret._id?.toString();
-      delete ret._id;
-      delete ret.__v;
-      delete ret.updatedAt;
+    transform: (_, returnedObject) => {
+      returnedObject.id = returnedObject._id?.toString();
+      delete returnedObject._id;
+      delete returnedObject.__v;
+      delete returnedObject.updatedAt;
 
-      return ret;
+      return returnedObject;
     },
   },
 })
