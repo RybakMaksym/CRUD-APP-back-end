@@ -1,7 +1,7 @@
 export enum NotificationType {
   MADE_ADMIN = 'madeAdmin',
-  PROFILE_EDIT = 'profile edit',
-  PROFILE_DELETE = 'profile delete',
+  PROFILE_EDIT = 'profileEdit',
+  PROFILE_DELETE = 'profileDelete',
 }
 
 export enum NotificationEvents {
