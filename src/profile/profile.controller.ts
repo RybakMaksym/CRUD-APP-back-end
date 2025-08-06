@@ -21,8 +21,6 @@ import { GetUserId } from '@/decorators/get-user-id.decorator';
 import { FilterFields } from '@/enums/filter.enums';
 import { NotificationType } from '@/enums/notification.enums';
 import { FileUploadService } from '@/file-upload/file-upload.service';
-import { NotificationGateway } from '@/notification/notification.gateway';
-import { NotificationService } from '@/notification/notification.service';
 import { CreateProfileDTO } from '@/profile/dto/create-profile.dto';
 import { UpdateProfileDTO } from '@/profile/dto/update-profile.dto';
 import { ProfileService } from '@/profile/profile.service';
@@ -39,8 +37,6 @@ export class ProfileController {
     private readonly profileService: ProfileService,
     private readonly fileUploadService: FileUploadService,
     private readonly userService: UserService,
-    private readonly notificationService: NotificationService,
-    private readonly notificationGateway: NotificationGateway,
   ) {}
 
   @Get('my-profiles')
@@ -144,15 +140,10 @@ export class ProfileController {
     if (myId !== profile.ownerId.toString()) {
       const admin = await this.userService.findById(myId);
 
-      const notification = await this.notificationService.createNotification({
-        type: NotificationType.PROFILE_EDIT,
-        message: `Profile ${profile.name} was edited by ${admin.username}`,
-        ownerId: profile.ownerId,
-      });
-
-      this.notificationGateway.sendNotification(
-        profile.ownerId.toString(),
-        notification,
+      await this.profileService.sendProfileNotification(
+        profile.ownerId,
+        NotificationType.PROFILE_EDIT,
+        `Profile ${profile.name} was edited by ${admin.username}`,
       );
     }
 
@@ -177,15 +168,10 @@ export class ProfileController {
     if (myId !== profile.ownerId.toString()) {
       const admin = await this.userService.findById(myId);
 
-      const notification = await this.notificationService.createNotification({
-        type: NotificationType.PROFILE_DELETE,
-        message: `Profile ${profile.name} was deleted by ${admin.username}`,
-        ownerId: profile.ownerId,
-      });
-
-      this.notificationGateway.sendNotification(
-        profile.ownerId.toString(),
-        notification,
+      await this.profileService.sendProfileNotification(
+        profile.ownerId,
+        NotificationType.PROFILE_DELETE,
+        `Profile ${profile.name} was deleted by ${admin.username}`,
       );
     }
 

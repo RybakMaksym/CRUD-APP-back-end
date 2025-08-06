@@ -4,10 +4,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, UpdateQuery } from 'mongoose';
+import { Model, Types, UpdateQuery } from 'mongoose';
 
 import { USER_POPULATED_DATA } from '@/constants/populated-data.constants';
+import { NotificationType } from '@/enums/notification.enums';
 import { escapeRegex } from '@/helpers/escape-regex';
+import { NotificationGateway } from '@/notification/notification.gateway';
+import { NotificationService } from '@/notification/notification.service';
 import { CreateProfileDTO } from '@/profile/dto/create-profile.dto';
 import { Profile, ProfileDocument } from '@/profile/models/profile.model';
 import { IPopulatedProfiles, IProfile } from '@/profile/profile.types';
@@ -22,6 +25,8 @@ export class ProfileService {
     @InjectModel(Profile.name)
     private readonly profileModel: Model<ProfileDocument>,
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    private readonly notificationService: NotificationService,
+    private readonly notificationGateway: NotificationGateway,
   ) {}
 
   public async create(
@@ -194,5 +199,19 @@ export class ProfileService {
       totalProfiles,
       totalAdults,
     };
+  }
+
+  public async sendProfileNotification(
+    ownerId: Types.ObjectId,
+    notificationType: NotificationType,
+    notificationMessage: string,
+  ): Promise<void> {
+    const notification = await this.notificationService.createNotification({
+      type: notificationType,
+      message: notificationMessage,
+      ownerId: ownerId,
+    });
+
+    this.notificationGateway.sendNotification(ownerId.toString(), notification);
   }
 }

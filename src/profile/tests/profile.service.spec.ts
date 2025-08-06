@@ -1,9 +1,12 @@
 import { getModelToken } from '@nestjs/mongoose';
 import type { TestingModule } from '@nestjs/testing';
 import { Test } from '@nestjs/testing';
-import type { Model } from 'mongoose';
+import { Types, type Model } from 'mongoose';
 
 import { Gender } from '@/enums/gender.enum';
+import { NotificationType } from '@/enums/notification.enums';
+import { NotificationGateway } from '@/notification/notification.gateway';
+import { NotificationService } from '@/notification/notification.service';
 import type { CreateProfileDTO } from '@/profile/dto/create-profile.dto';
 import { Profile } from '@/profile/models/profile.model';
 import { ProfileService } from '@/profile/profile.service';
@@ -24,6 +27,14 @@ const mockUserModel = {
   countDocuments: jest.fn(),
 };
 
+const mockNotificationService = () => ({
+  createNotification: jest.fn(),
+});
+
+const mockNotificationGateway = () => ({
+  sendNotification: jest.fn(),
+});
+
 describe('ProfileService', () => {
   let service: ProfileService;
   let profileModel: jest.Mocked<Model<any>>;
@@ -41,6 +52,8 @@ describe('ProfileService', () => {
           provide: getModelToken(User.name),
           useValue: mockUserModel,
         },
+        { provide: NotificationService, useFactory: mockNotificationService },
+        { provide: NotificationGateway, useFactory: mockNotificationGateway },
       ],
     }).compile();
 
@@ -359,6 +372,40 @@ describe('ProfileService', () => {
         totalProfiles: mockTotalProfiles,
         totalAdults: mockTotalAdults,
       });
+    });
+  });
+
+  describe('sendProfileNotification()', () => {
+    it('should create notification and send it via gateway', async () => {
+      const ownerId = new Types.ObjectId();
+      const type = NotificationType.PROFILE_EDIT;
+      const message = 'Your profile was updated';
+      const mockNotification = {
+        id: 'notif-id',
+        type,
+        message,
+        ownerId,
+        createdAt: new Date(),
+      };
+      const createNotification = jest
+        .spyOn(service['notificationService'], 'createNotification')
+        .mockResolvedValue(mockNotification as any);
+      const sendNotification = jest.spyOn(
+        service['notificationGateway'],
+        'sendNotification',
+      );
+
+      await service.sendProfileNotification(ownerId, type, message);
+
+      expect(createNotification).toHaveBeenCalledWith({
+        type,
+        message,
+        ownerId,
+      });
+      expect(sendNotification).toHaveBeenCalledWith(
+        ownerId.toString(),
+        mockNotification,
+      );
     });
   });
 });

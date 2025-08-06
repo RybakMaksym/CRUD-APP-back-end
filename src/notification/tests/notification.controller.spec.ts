@@ -38,18 +38,19 @@ describe('NotificationController', () => {
     expect(controller).toBeDefined();
   });
 
+  const userId = new Types.ObjectId();
+  const mockNotifications: INotification[] = [
+    {
+      type: NotificationType.PROFILE_EDIT,
+      message: 'Profile updated',
+      ownerId: userId,
+    },
+  ];
+
   describe('getNotifications()', () => {
     it('should return paginated notifications', async () => {
-      const userId = new Types.ObjectId();
       const page = 1;
       const limit = 5;
-      const mockNotifications: INotification[] = [
-        {
-          type: NotificationType.PROFILE_EDIT,
-          message: 'Profile updated',
-          ownerId: userId,
-        },
-      ];
       const mockPaginated = {
         data: mockNotifications,
         page,
@@ -76,16 +77,8 @@ describe('NotificationController', () => {
     });
 
     it('should return paginated notifications with default page & limit', async () => {
-      const userId = new Types.ObjectId();
       const page = 1;
       const limit = 10;
-      const mockNotifications: INotification[] = [
-        {
-          type: NotificationType.PROFILE_EDIT,
-          message: 'Profile updated',
-          ownerId: userId,
-        },
-      ];
       const mockPaginated = {
         data: mockNotifications,
         page,

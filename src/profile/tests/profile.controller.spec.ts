@@ -7,8 +7,6 @@ import { FilterFields } from '@/enums/filter.enums';
 import { Gender } from '@/enums/gender.enum';
 import { Role } from '@/enums/role.enum';
 import { FileUploadService } from '@/file-upload/file-upload.service';
-import { NotificationGateway } from '@/notification/notification.gateway';
-import { NotificationService } from '@/notification/notification.service';
 import type { CreateProfileDTO } from '@/profile/dto/create-profile.dto';
 import type { UpdateProfileDTO } from '@/profile/dto/update-profile.dto';
 import { ProfileController } from '@/profile/profile.controller';
@@ -26,6 +24,7 @@ const mockProfileService = {
   filterByFields: jest.fn(),
   filterByAge: jest.fn(),
   getProfilesStats: jest.fn(),
+  sendProfileNotification: jest.fn(),
 };
 
 const mockFileUploadService = {
@@ -34,14 +33,6 @@ const mockFileUploadService = {
 
 const mockUserService = () => ({
   findById: jest.fn(),
-});
-
-const mockNotificationService = () => ({
-  createNotification: jest.fn(),
-});
-
-const mockNotificationGateway = () => ({
-  sendNotification: jest.fn(),
 });
 
 describe('ProfileController', () => {
@@ -63,8 +54,6 @@ describe('ProfileController', () => {
           useValue: mockFileUploadService,
         },
         { provide: UserService, useFactory: mockUserService },
-        { provide: NotificationService, useFactory: mockNotificationService },
-        { provide: NotificationGateway, useFactory: mockNotificationGateway },
       ],
     }).compile();
 
