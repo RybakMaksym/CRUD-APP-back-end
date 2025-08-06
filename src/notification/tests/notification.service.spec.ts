@@ -76,9 +76,7 @@ describe('NotificationService', () => {
         sort: jest.fn().mockReturnValue({
           skip: jest.fn().mockReturnValue({
             limit: jest.fn().mockReturnValue({
-              lean: jest.fn().mockReturnValue({
-                exec: jest.fn().mockResolvedValue(mockNotifications),
-              }),
+              exec: jest.fn().mockResolvedValue(mockNotifications),
             }),
           }),
         }),
@@ -112,9 +110,7 @@ describe('NotificationService', () => {
         sort: jest.fn().mockReturnValue({
           skip: jest.fn().mockReturnValue({
             limit: jest.fn().mockReturnValue({
-              lean: jest.fn().mockReturnValue({
-                exec: jest.fn().mockResolvedValue([]),
-              }),
+              exec: jest.fn().mockResolvedValue([]),
             }),
           }),
         }),

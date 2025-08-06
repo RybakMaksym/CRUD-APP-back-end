@@ -33,7 +33,6 @@ export class NotificationService {
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
-        .lean()
         .exec(),
       this.notificationModel.countDocuments({ ownerId: userId }),
     ]);
