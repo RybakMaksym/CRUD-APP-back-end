@@ -10,7 +10,7 @@ import * as request from 'supertest';
 import { AppModule } from '@/app/app.module';
 import { NotificationType } from '@/enums/notification.enums';
 
-describe('Notification flow (e2e)', () => {
+describe('Notification flow', () => {
   let app: INestApplication;
   let server: any;
   let dbConnection: Connection;
