@@ -137,7 +137,7 @@ export class ProfileController {
       ? await this.fileUploadService.uploadImage(file)
       : profile.avatarUrl;
 
-    if (myId !== profile.ownerId.toString()) {
+    if (myId !== profile.ownerId) {
       const admin = await this.userService.findById(myId);
 
       await this.profileService.sendProfileNotification(
@@ -165,7 +165,7 @@ export class ProfileController {
   ): Promise<IMessageReponse> {
     const profile = await this.profileService.delete(id);
 
-    if (myId !== profile.ownerId.toString()) {
+    if (myId !== profile.ownerId) {
       const admin = await this.userService.findById(myId);
 
       await this.profileService.sendProfileNotification(
