@@ -1,7 +1,6 @@
 import { NotFoundException } from '@nestjs/common';
 import type { TestingModule } from '@nestjs/testing';
 import { Test } from '@nestjs/testing';
-import { Types } from 'mongoose';
 
 import { FilterFields } from '@/enums/filter.enums';
 import { Gender } from '@/enums/gender.enum';
@@ -279,7 +278,7 @@ describe('ProfileController', () => {
         birthDate: new Date(),
         country: 'Ukraine',
         city: 'Kyiv',
-        ownerId: new Types.ObjectId('64a987654321fedcba654321'),
+        ownerId: '1',
       });
       userService.findById.mockResolvedValue({
         id: 'id',

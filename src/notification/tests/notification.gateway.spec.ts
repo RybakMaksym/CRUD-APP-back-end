@@ -1,6 +1,5 @@
 import type { TestingModule } from '@nestjs/testing';
 import { Test } from '@nestjs/testing';
-import { Types } from 'mongoose';
 import type { Server, Socket } from 'socket.io';
 
 import {
@@ -37,16 +36,16 @@ describe('NotificationGateway', () => {
 
   describe('sendNotification()', () => {
     it('should emit notification to specific user', () => {
-      const userId = new Types.ObjectId();
+      const userId = '';
       const payload: INotification = {
         type: NotificationType.PROFILE_EDIT,
         message: 'New notification',
         ownerId: userId,
       };
 
-      gateway.sendNotification(userId.toString(), payload);
+      gateway.sendNotification(userId, payload);
 
-      expect(gateway['server'].to).toHaveBeenCalledWith(userId.toString());
+      expect(gateway['server'].to).toHaveBeenCalledWith(userId);
       expect(gateway['server'].emit).toHaveBeenCalledWith(
         NotificationEvents.NOTIFICATION,
         payload,

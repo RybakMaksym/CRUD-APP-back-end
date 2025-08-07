@@ -14,7 +14,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Types } from 'mongoose';
 
 import { AccessTokenGuard } from '@/auth/guards/access-token.guard';
 import { AVATAR_VALIDATION_OPTIONS } from '@/constants/avatar-validation-options.constants';
@@ -144,7 +143,7 @@ export class UserController {
         const notification = await this.notificationService.createNotification({
           type: NotificationType.MADE_ADMIN,
           message: `You were made an admin by ${admin.username}`,
-          ownerId: new Types.ObjectId(userId),
+          ownerId: userId,
         });
 
         this.notificationGateway.sendNotification(userId, notification);

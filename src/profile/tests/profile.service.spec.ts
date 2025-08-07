@@ -1,7 +1,7 @@
 import { getModelToken } from '@nestjs/mongoose';
 import type { TestingModule } from '@nestjs/testing';
 import { Test } from '@nestjs/testing';
-import { Types, type Model } from 'mongoose';
+import { type Model } from 'mongoose';
 
 import { Gender } from '@/enums/gender.enum';
 import { NotificationType } from '@/enums/notification.enums';
@@ -377,7 +377,7 @@ describe('ProfileService', () => {
 
   describe('sendProfileNotification()', () => {
     it('should create notification and send it via gateway', async () => {
-      const ownerId = new Types.ObjectId();
+      const ownerId = '';
       const type = NotificationType.PROFILE_EDIT;
       const message = 'Your profile was updated';
       const mockNotification = {
@@ -402,10 +402,7 @@ describe('ProfileService', () => {
         message,
         ownerId,
       });
-      expect(sendNotification).toHaveBeenCalledWith(
-        ownerId.toString(),
-        mockNotification,
-      );
+      expect(sendNotification).toHaveBeenCalledWith(ownerId, mockNotification);
     });
   });
 });

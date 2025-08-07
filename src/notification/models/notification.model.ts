@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Document } from 'mongoose';
 
 import { NotificationType } from '@/enums/notification.enums';
 import { INotification } from '@/notification/notification.types';
@@ -26,8 +26,8 @@ export class Notification extends Document implements INotification {
   @Prop({ required: true })
   public message: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  public ownerId: Types.ObjectId;
+  @Prop({ ref: 'User', required: true })
+  public ownerId: string;
 }
 
 export const NotificationSchema = SchemaFactory.createForClass(Notification);

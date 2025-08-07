@@ -1,6 +1,5 @@
 import type { TestingModule } from '@nestjs/testing';
 import { Test } from '@nestjs/testing';
-import { Types } from 'mongoose';
 
 import { NotificationType } from '@/enums/notification.enums';
 import { NotificationController } from '@/notification/notification.controller';
@@ -38,7 +37,7 @@ describe('NotificationController', () => {
     expect(controller).toBeDefined();
   });
 
-  const userId = new Types.ObjectId();
+  const userId = '1';
   const mockNotifications: INotification[] = [
     {
       type: NotificationType.PROFILE_EDIT,
@@ -62,14 +61,10 @@ describe('NotificationController', () => {
         mockPaginated,
       );
 
-      const result = await controller.getNotifications(
-        userId.toString(),
-        page,
-        limit,
-      );
+      const result = await controller.getNotifications(userId, page, limit);
 
       expect(service.getUserNotificationsWithPagination).toHaveBeenCalledWith(
-        userId.toString(),
+        userId,
         page,
         limit,
       );
@@ -93,7 +88,7 @@ describe('NotificationController', () => {
       const result = await controller.getNotifications(userId.toString());
 
       expect(service.getUserNotificationsWithPagination).toHaveBeenCalledWith(
-        userId.toString(),
+        userId,
         page,
         limit,
       );

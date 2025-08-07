@@ -1,7 +1,6 @@
 import { getModelToken } from '@nestjs/mongoose';
 import type { TestingModule } from '@nestjs/testing';
 import { Test } from '@nestjs/testing';
-import { Types } from 'mongoose';
 
 import { NotificationType } from '@/enums/notification.enums';
 import { Notification } from '@/notification/models/notification.model';
@@ -42,7 +41,7 @@ describe('NotificationService', () => {
       const dto: INotification = {
         type: NotificationType.PROFILE_EDIT,
         message: 'Profile updated',
-        ownerId: new Types.ObjectId('64a987654321fedcba654321'),
+        ownerId: '1',
       };
       notificationModel.create.mockResolvedValue(dto);
 

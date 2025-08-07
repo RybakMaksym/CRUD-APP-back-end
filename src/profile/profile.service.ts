@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types, UpdateQuery } from 'mongoose';
+import { Model, UpdateQuery } from 'mongoose';
 
 import { USER_POPULATED_DATA } from '@/constants/populated-data.constants';
 import { NotificationType } from '@/enums/notification.enums';
@@ -202,7 +202,7 @@ export class ProfileService {
   }
 
   public async sendProfileNotification(
-    ownerId: Types.ObjectId,
+    ownerId: string,
     notificationType: NotificationType,
     notificationMessage: string,
   ): Promise<void> {

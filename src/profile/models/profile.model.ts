@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Types } from 'mongoose';
+import { Document } from 'mongoose';
 
 import { Gender } from '@/enums/gender.enum';
 import { IProfile } from '@/profile/profile.types';
@@ -39,8 +39,8 @@ export class Profile extends Document implements IProfile {
   @Prop()
   public avatarUrl?: string;
 
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
-  public ownerId: Types.ObjectId;
+  @Prop({ ref: 'User', required: true })
+  public ownerId: string;
 }
 
 export const ProfileSchema = SchemaFactory.createForClass(Profile);
