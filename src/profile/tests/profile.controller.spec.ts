@@ -4,11 +4,13 @@ import { Test } from '@nestjs/testing';
 
 import { FilterFields } from '@/enums/filter.enums';
 import { Gender } from '@/enums/gender.enum';
+import { Role } from '@/enums/role.enum';
 import { FileUploadService } from '@/file-upload/file-upload.service';
 import type { CreateProfileDTO } from '@/profile/dto/create-profile.dto';
 import type { UpdateProfileDTO } from '@/profile/dto/update-profile.dto';
 import { ProfileController } from '@/profile/profile.controller';
 import { ProfileService } from '@/profile/profile.service';
+import { UserService } from '@/user/user.service';
 
 const mockProfileService = {
   findAllWithPagination: jest.fn(),
@@ -21,16 +23,22 @@ const mockProfileService = {
   filterByFields: jest.fn(),
   filterByAge: jest.fn(),
   getProfilesStats: jest.fn(),
+  sendProfileNotification: jest.fn(),
 };
 
 const mockFileUploadService = {
   uploadImage: jest.fn(),
 };
 
+const mockUserService = () => ({
+  findById: jest.fn(),
+});
+
 describe('ProfileController', () => {
   let controller: ProfileController;
   let profileService: jest.Mocked<ProfileService>;
   let fileUploadService: jest.Mocked<FileUploadService>;
+  let userService: jest.Mocked<UserService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -44,12 +52,14 @@ describe('ProfileController', () => {
           provide: FileUploadService,
           useValue: mockFileUploadService,
         },
+        { provide: UserService, useFactory: mockUserService },
       ],
     }).compile();
 
     controller = module.get<ProfileController>(ProfileController);
     profileService = module.get(ProfileService);
     fileUploadService = module.get(FileUploadService);
+    userService = module.get(UserService);
   });
 
   afterEach(() => {
@@ -216,6 +226,7 @@ describe('ProfileController', () => {
         country: 'Ukraine',
         city: 'Kyiv',
         avatarUrl: 'old-url',
+        ownerId: 'owner-id',
       };
       profileService.findById.mockResolvedValue(existing as any);
       fileUploadService.uploadImage.mockResolvedValue('new-url');
@@ -224,8 +235,21 @@ describe('ProfileController', () => {
         ...dto,
         avatarUrl: 'new-url',
       } as any);
+      userService.findById.mockResolvedValue({
+        id: 'id',
+        username: 'user',
+        email: 'email@gmail.com',
+        passwordHash: '123',
+        role: Role.User,
+        profiles: [],
+      });
 
-      const result = await controller.updateProfileById('id', dto, file);
+      const result = await controller.updateProfileById(
+        'my-id',
+        'id',
+        dto,
+        file,
+      );
 
       expect(result).toEqual(
         expect.objectContaining({
@@ -240,16 +264,35 @@ describe('ProfileController', () => {
       profileService.findById.mockResolvedValue(null);
 
       await expect(
-        controller.updateProfileById('not-found-id', {}, undefined),
+        controller.updateProfileById('user-id', 'not-found-id', {}, undefined),
       ).rejects.toThrow(NotFoundException);
     });
   });
 
   describe('deleteUserById()', () => {
     it('should delete a profile and return success message', async () => {
-      profileService.delete.mockResolvedValue(undefined);
+      profileService.delete.mockResolvedValue({
+        id: 'id',
+        name: 'Old',
+        gender: Gender.Male,
+        birthDate: new Date(),
+        country: 'Ukraine',
+        city: 'Kyiv',
+        ownerId: '1',
+      });
+      userService.findById.mockResolvedValue({
+        id: 'id',
+        username: 'user',
+        email: 'email@gmail.com',
+        passwordHash: '123',
+        role: Role.User,
+        profiles: [],
+      });
 
-      const result = await controller.deleteProfileById('profile-id');
+      const result = await controller.deleteProfileById(
+        'user-id',
+        'profile-id',
+      );
 
       expect(profileService.delete).toHaveBeenCalledWith('profile-id');
       expect(result).toEqual({ message: 'Profile deleted successfuly' });

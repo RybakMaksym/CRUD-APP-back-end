@@ -9,7 +9,7 @@ import * as request from 'supertest';
 
 import { AppModule } from '@/app/app.module';
 
-describe('AuthController (e2e)', () => {
+describe('Authorization flow', () => {
   let app: INestApplication;
   let server: any;
   let dbConnection: Connection;

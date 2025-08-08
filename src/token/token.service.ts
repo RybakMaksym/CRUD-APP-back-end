@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 
 import { compareHash, hash } from '@/helpers/hash';
-import { ITokens } from '@/token/types/tokens';
+import { ITokens } from '@/token/tokens.types';
 import { UserService } from '@/user/user.service';
 
 @Injectable()

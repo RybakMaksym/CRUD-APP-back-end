@@ -1,5 +1,3 @@
-import type { Types } from 'mongoose';
-
 import type { Gender } from '@/enums/gender.enum';
 
 export interface IProfile {
@@ -10,7 +8,7 @@ export interface IProfile {
   country: string;
   city: string;
   avatarUrl?: string;
-  ownerId: Types.ObjectId;
+  ownerId: string;
 }
 
 export interface IPopulatedProfiles {

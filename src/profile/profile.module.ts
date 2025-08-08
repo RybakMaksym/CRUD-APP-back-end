@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { FileUploadModule } from '@/file-upload/file-upload.module';
+import { NotificationModule } from '@/notification/notification.module';
 import { Profile, ProfileSchema } from '@/profile/models/profile.model';
 import { ProfileController } from '@/profile/profile.controller';
 import { ProfileService } from '@/profile/profile.service';
@@ -16,6 +17,7 @@ import { UserModule } from '@/user/user.module';
     ]),
     UserModule,
     FileUploadModule,
+    NotificationModule,
   ],
   controllers: [ProfileController],
   providers: [ProfileService],

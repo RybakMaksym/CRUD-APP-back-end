@@ -7,10 +7,13 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, UpdateQuery } from 'mongoose';
 
 import { USER_POPULATED_DATA } from '@/constants/populated-data.constants';
+import { NotificationType } from '@/enums/notification.enums';
 import { escapeRegex } from '@/helpers/escape-regex';
+import { NotificationGateway } from '@/notification/notification.gateway';
+import { NotificationService } from '@/notification/notification.service';
 import { CreateProfileDTO } from '@/profile/dto/create-profile.dto';
 import { Profile, ProfileDocument } from '@/profile/models/profile.model';
-import { IPopulatedProfiles, IProfile } from '@/profile/types/profile';
+import { IPopulatedProfiles, IProfile } from '@/profile/profile.types';
 import { FilterableFields } from '@/types/filterable-fileds.type';
 import { IPaginatedResponse } from '@/types/pagination.interfaces';
 import { IStatsResponse } from '@/types/response.interfaces';
@@ -22,6 +25,8 @@ export class ProfileService {
     @InjectModel(Profile.name)
     private readonly profileModel: Model<ProfileDocument>,
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    private readonly notificationService: NotificationService,
+    private readonly notificationGateway: NotificationGateway,
   ) {}
 
   public async create(
@@ -52,7 +57,7 @@ export class ProfileService {
     }
   }
 
-  public async delete(id: string): Promise<void> {
+  public async delete(id: string): Promise<IProfile> {
     const profile = await this.profileModel.findById(id);
 
     if (!profile) {
@@ -60,10 +65,11 @@ export class ProfileService {
     }
 
     try {
-      await this.profileModel.findByIdAndDelete(id);
       await this.userModel.findByIdAndUpdate(profile.ownerId, {
         $pull: { profiles: profile.id },
       });
+
+      return this.profileModel.findByIdAndDelete(id);
     } catch {
       throw new InternalServerErrorException('Failed to delete profile');
     }
@@ -193,5 +199,19 @@ export class ProfileService {
       totalProfiles,
       totalAdults,
     };
+  }
+
+  public async sendProfileNotification(
+    ownerId: string,
+    notificationType: NotificationType,
+    notificationMessage: string,
+  ): Promise<void> {
+    const notification = await this.notificationService.createNotification({
+      type: notificationType,
+      message: notificationMessage,
+      ownerId: ownerId,
+    });
+
+    this.notificationGateway.sendNotification(ownerId.toString(), notification);
   }
 }

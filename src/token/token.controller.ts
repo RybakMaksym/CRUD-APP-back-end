@@ -8,7 +8,7 @@ import {
 
 import { RefreshTokenGuard } from '@/auth/guards/refresh-token.guard';
 import { TokenService } from '@/token/token.service';
-import { ITokens } from '@/token/types/tokens';
+import { ITokens } from '@/token/tokens.types';
 
 @Controller('token')
 export class TokenController {

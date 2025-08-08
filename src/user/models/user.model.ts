@@ -3,23 +3,23 @@ import { Document, Types } from 'mongoose';
 
 import { Role } from '@/enums/role.enum';
 import { Profile } from '@/profile/models/profile.model';
-import { IUser } from '@/user/types/user';
+import { IUser } from '@/user/user.types';
 
 export type UserDocument = User & Document;
 
 @Schema({
   timestamps: true,
   toJSON: {
-    transform: (_, ret) => {
-      ret.id = ret._id?.toString();
-      delete ret._id;
-      delete ret.passwordHash;
-      delete ret.refreshToken;
-      delete ret.createdAt;
-      delete ret.updatedAt;
-      delete ret.__v;
+    transform: (_, returnedObject) => {
+      returnedObject.id = returnedObject._id?.toString();
+      delete returnedObject._id;
+      delete returnedObject.passwordHash;
+      delete returnedObject.refreshToken;
+      delete returnedObject.createdAt;
+      delete returnedObject.updatedAt;
+      delete returnedObject.__v;
 
-      return ret;
+      return returnedObject;
     },
   },
 })

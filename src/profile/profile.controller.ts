@@ -19,21 +19,24 @@ import { AVATAR_VALIDATION_OPTIONS } from '@/constants/avatar-validation-options
 import { DEFAULT_PROFILES_PAGE_LIMIT } from '@/constants/profile.constants';
 import { GetUserId } from '@/decorators/get-user-id.decorator';
 import { FilterFields } from '@/enums/filter.enums';
+import { NotificationType } from '@/enums/notification.enums';
 import { FileUploadService } from '@/file-upload/file-upload.service';
 import { CreateProfileDTO } from '@/profile/dto/create-profile.dto';
 import { UpdateProfileDTO } from '@/profile/dto/update-profile.dto';
 import { ProfileService } from '@/profile/profile.service';
-import { IProfile } from '@/profile/types/profile';
+import { IProfile } from '@/profile/profile.types';
 import { FilterableFields } from '@/types/filterable-fileds.type';
 import { IMessageReponse } from '@/types/message.interfaces';
 import { IPaginatedResponse } from '@/types/pagination.interfaces';
 import { IStatsResponse } from '@/types/response.interfaces';
+import { UserService } from '@/user/user.service';
 
 @Controller('profile')
 export class ProfileController {
   constructor(
     private readonly profileService: ProfileService,
     private readonly fileUploadService: FileUploadService,
+    private readonly userService: UserService,
   ) {}
 
   @Get('my-profiles')
@@ -119,6 +122,7 @@ export class ProfileController {
   @UseGuards(AccessTokenGuard)
   @UseInterceptors(FileInterceptor('avatar', AVATAR_VALIDATION_OPTIONS))
   public async updateProfileById(
+    @GetUserId() myId: string,
     @Param('id') profileId: string,
     @Body() dto: UpdateProfileDTO,
     @UploadedFile() file?: Express.Multer.File,
@@ -133,6 +137,16 @@ export class ProfileController {
       ? await this.fileUploadService.uploadImage(file)
       : profile.avatarUrl;
 
+    if (myId !== profile.ownerId) {
+      const admin = await this.userService.findById(myId);
+
+      await this.profileService.sendProfileNotification(
+        profile.ownerId,
+        NotificationType.PROFILE_EDIT,
+        `Profile ${profile.name} was edited by ${admin.username}`,
+      );
+    }
+
     return this.profileService.update(profileId, {
       name: dto.name ?? profile.name,
       birthDate: dto.birthDate ?? profile.birthDate,
@@ -146,9 +160,20 @@ export class ProfileController {
   @Delete(':id')
   @UseGuards(AccessTokenGuard)
   public async deleteProfileById(
+    @GetUserId() myId: string,
     @Param('id') id: string,
   ): Promise<IMessageReponse> {
-    await this.profileService.delete(id);
+    const profile = await this.profileService.delete(id);
+
+    if (myId !== profile.ownerId) {
+      const admin = await this.userService.findById(myId);
+
+      await this.profileService.sendProfileNotification(
+        profile.ownerId,
+        NotificationType.PROFILE_DELETE,
+        `Profile ${profile.name} was deleted by ${admin.username}`,
+      );
+    }
 
     return { message: 'Profile deleted successfuly' };
   }
