@@ -58,6 +58,20 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
+## Run with Docker
+
+```bash
+
+# build Docker image
+docker build -t nest-app .
+
+# start container
+docker docker run -d --name nest-container -p 3000:3000 nest-app
+
+# stop container
+docker docker stop nest-container
+```
+
 ## Deployment
 
 When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
