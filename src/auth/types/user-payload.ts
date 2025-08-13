@@ -1,3 +1,4 @@
+import type { Languages } from '@/enums/languages';
 import type { Role } from '@/enums/role.enum';
 
 export interface IUserPayload {
@@ -6,4 +7,5 @@ export interface IUserPayload {
   username: string;
   role: Role;
   avatarUrl: string;
+  language: Languages;
 }

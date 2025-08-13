@@ -4,6 +4,7 @@ import { Test } from '@nestjs/testing';
 
 import { FilterFields } from '@/enums/filter.enums';
 import { Gender } from '@/enums/gender.enum';
+import { Languages } from '@/enums/languages';
 import { Role } from '@/enums/role.enum';
 import { FileUploadService } from '@/file-upload/file-upload.service';
 import type { CreateProfileDTO } from '@/profile/dto/create-profile.dto';
@@ -241,6 +242,7 @@ describe('ProfileController', () => {
         email: 'email@gmail.com',
         passwordHash: '123',
         role: Role.User,
+        language: Languages.ENGLISH,
         profiles: [],
       });
 
@@ -286,6 +288,7 @@ describe('ProfileController', () => {
         email: 'email@gmail.com',
         passwordHash: '123',
         role: Role.User,
+        language: Languages.ENGLISH,
         profiles: [],
       });
 

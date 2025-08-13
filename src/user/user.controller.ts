@@ -159,6 +159,7 @@ export class UserController {
       email: dto.email ?? user.email,
       role,
       avatarUrl,
+      language: dto.language ?? user.language,
     });
   }
 
