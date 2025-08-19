@@ -26,6 +26,7 @@ import { NotificationGateway } from '@/notification/notification.gateway';
 import { NotificationService } from '@/notification/notification.service';
 import { IMessageReponse } from '@/types/message.interfaces';
 import { ITotalResponse } from '@/types/response.interfaces';
+import { UpdateUserSettingsDto } from '@/user/dto/update-user-settings.dto';
 import { UpdateUserDTO } from '@/user/dto/update-user.dto';
 import { UserService } from '@/user/user.service';
 import { IUser } from '@/user/user.types';
@@ -159,8 +160,26 @@ export class UserController {
       email: dto.email ?? user.email,
       role,
       avatarUrl,
+    });
+  }
+
+  @Patch('/update-settings')
+  @UseGuards(AccessTokenGuard)
+  public async updateUserSettings(
+    @GetUserId() myId: string,
+    @Body() dto: UpdateUserSettingsDto,
+  ): Promise<IMessageReponse> {
+    const user = await this.userService.findById(myId);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    await this.userService.update(myId, {
       language: dto.language ?? user.language,
     });
+
+    return { message: "User\'s settings updated successfuly" };
   }
 
   @Delete(':id')
