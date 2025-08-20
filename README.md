@@ -37,7 +37,7 @@ A full-featured web application built with **NestJS** and **NestJS**, supporting
 
 ## Technologies
 
-- **Frontend:** NextJS, TypeScript, Material-UI
+- **Frontend:** NextJS, TypeScript, Material-UI Storybook i18n ESLint Stylelin Husky Jest
 - **Backend:** Node.js, NestJS, MongoDB
 - **Authentication:** JWT Access & Refresh tokens
 - **Real-time Updates:** WebSockets
