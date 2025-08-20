@@ -7,6 +7,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, UpdateQuery } from 'mongoose';
 
 import { CreateUserDTO } from '@/auth/dto/create-user.dto';
+import { Languages } from '@/enums/languages';
 import { Role } from '@/enums/role.enum';
 import { escapeRegex } from '@/helpers/escape-regex';
 import { hash } from '@/helpers/hash';
@@ -24,6 +25,7 @@ export class UserService {
       ...dto,
       passwordHash: hash(dto.password),
       role: dto.isAdmin ? Role.Admin : Role.User,
+      language: Languages.ENGLISH,
     });
   }
 

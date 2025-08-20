@@ -47,6 +47,7 @@ export class AuthService {
         email: user.email,
         role: user.role,
         avatarUrl: user.avatarUrl,
+        language: user.language,
       },
       ...tokens,
     };
@@ -64,6 +65,7 @@ export class AuthService {
         email: user.email,
         role: user.role,
         avatarUrl: user.avatarUrl,
+        language: user.language,
       },
       ...tokens,
     };

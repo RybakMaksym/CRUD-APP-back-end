@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
+import { Languages } from '@/enums/languages';
 import { Role } from '@/enums/role.enum';
 import { Profile } from '@/profile/models/profile.model';
 import { IUser } from '@/user/user.types';
@@ -41,6 +42,9 @@ export class User extends Document implements IUser {
 
   @Prop()
   public avatarUrl?: string;
+
+  @Prop({ enum: Languages, default: Languages.ENGLISH })
+  public language: Languages;
 
   @Prop({ type: [{ type: Types.ObjectId, ref: Profile.name }] })
   public profiles: Types.ObjectId[];

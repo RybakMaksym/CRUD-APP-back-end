@@ -6,6 +6,7 @@ import {
 import type { TestingModule } from '@nestjs/testing';
 import { Test } from '@nestjs/testing';
 
+import { Languages } from '@/enums/languages';
 import { Role } from '@/enums/role.enum';
 import { FileUploadService } from '@/file-upload/file-upload.service';
 import { NotificationGateway } from '@/notification/notification.gateway';
@@ -223,6 +224,58 @@ describe('UserController', () => {
       await expect(
         controller.updateUserById('user', 'other-id', {}),
       ).rejects.toThrow(ForbiddenException);
+    });
+  });
+
+  describe('updateUserSettings()', () => {
+    it('should update user language successfully', async () => {
+      const userId = 'user-id';
+      const dto = { language: Languages.UKRAINIAN };
+      const existingUser = { language: Languages.ENGLISH };
+      userService.findById.mockResolvedValue(existingUser);
+      userService.update.mockResolvedValue({
+        ...existingUser,
+        language: Languages.UKRAINIAN,
+      });
+
+      const result = await controller.updateUserSettings(userId, dto);
+
+      expect(userService.findById).toHaveBeenCalledWith(userId);
+      expect(userService.update).toHaveBeenCalledWith(userId, {
+        language: 'uk',
+      });
+      expect(result).toEqual({
+        message: "User's settings updated successfuly",
+      });
+    });
+
+    it('should keep existing language if dto.language is not provided', async () => {
+      const userId = 'user-id';
+      const dto = {};
+      const existingUser = { language: Languages.ENGLISH };
+      userService.findById.mockResolvedValue(existingUser);
+      userService.update.mockResolvedValue(existingUser);
+
+      const result = await controller.updateUserSettings(userId, dto);
+
+      expect(userService.findById).toHaveBeenCalledWith(userId);
+      expect(userService.update).toHaveBeenCalledWith(userId, {
+        language: 'en',
+      });
+      expect(result).toEqual({
+        message: "User's settings updated successfuly",
+      });
+    });
+
+    it('should throw NotFoundException if user does not exist', async () => {
+      const userId = 'user-id';
+      const dto = { language: Languages.UKRAINIAN };
+
+      userService.findById.mockResolvedValue(null);
+
+      await expect(controller.updateUserSettings(userId, dto)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 

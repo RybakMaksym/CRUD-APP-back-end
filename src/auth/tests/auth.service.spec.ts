@@ -5,6 +5,7 @@ import { Test } from '@nestjs/testing';
 import { AuthService } from '@/auth/auth.service';
 import type { CreateUserDTO } from '@/auth/dto/create-user.dto';
 import type { LogInUserDTO } from '@/auth/dto/log-in-user.dto';
+import { Languages } from '@/enums/languages';
 import { Role } from '@/enums/role.enum';
 import { compareHash } from '@/helpers/hash';
 import { TokenService } from '@/token/token.service';
@@ -70,6 +71,7 @@ describe('AuthService', () => {
         passwordHash: 'hash-password',
         role: Role.User,
         avatarUrl: null,
+        language: Languages.ENGLISH,
         profiles: [],
       };
       const expectedUser = {
@@ -77,6 +79,7 @@ describe('AuthService', () => {
         username: dto.username,
         email: dto.email,
         role: Role.User,
+        language: Languages.ENGLISH,
         avatarUrl: null,
       };
       const mockTokens = {
@@ -107,6 +110,7 @@ describe('AuthService', () => {
         passwordHash: 'hash-password',
         role: Role.User,
         avatarUrl: null,
+        language: Languages.ENGLISH,
         profiles: [],
       };
       userService.findByEmail.mockResolvedValue(mockUser);
@@ -134,6 +138,7 @@ describe('AuthService', () => {
         email: dto.email,
         passwordHash: 'hashed-password',
         role: Role.User,
+        language: Languages.ENGLISH,
         avatarUrl: null,
         profiles: [],
       };
@@ -163,6 +168,7 @@ describe('AuthService', () => {
           username: mockUser.username,
           email: mockUser.email,
           role: mockUser.role,
+          language: mockUser.language,
           avatarUrl: mockUser.avatarUrl,
         },
         ...mockTokens,
@@ -184,6 +190,7 @@ describe('AuthService', () => {
         email: `email@gmail.com`,
         passwordHash: 'hashed-password',
         role: Role.User,
+        language: Languages.ENGLISH,
         avatarUrl: null,
         profiles: [],
       };
