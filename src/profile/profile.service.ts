@@ -90,34 +90,45 @@ export class ProfileService {
 
   public async searchProfiles(
     query: string,
-    userId: string,
+    userId?: string,
   ): Promise<IProfile[]> {
-    if (!query) return this.findAllByUserId(userId);
+    if (!query && userId) return this.findAllByUserId(userId);
 
     const escaped = escapeRegex(query);
     const regex = new RegExp(escaped, 'i');
 
-    return this.profileModel.find({
-      ownerId: userId,
+    const filter: Record<string, any> = {
       $or: [
         { name: regex },
         { gender: regex },
         { country: regex },
         { city: regex },
       ],
-    });
+    };
+
+    if (userId) {
+      filter.ownerId = userId;
+    }
+
+    return this.profileModel.find(filter);
   }
 
   public async findAllWithPagination(
-    ownerId: string,
-    page: number,
-    limit: number,
+    page = 1,
+    limit = 10,
+    ownerId?: string,
   ): Promise<IPaginatedResponse<IProfile>> {
     const skip = (page - 1) * limit;
 
+    const filter: Record<string, any> = {};
+
+    if (ownerId) {
+      filter.ownerId = ownerId;
+    }
+
     const [data, total] = await Promise.all([
-      this.profileModel.find({ ownerId }).skip(skip).limit(limit).exec(),
-      this.profileModel.countDocuments({ ownerId }),
+      this.profileModel.find(filter).skip(skip).limit(limit).exec(),
+      this.profileModel.countDocuments(filter),
     ]);
 
     const totalPages = Math.ceil(total / limit);
@@ -135,34 +146,43 @@ export class ProfileService {
   public async getFilterSuggestions(
     field: FilterableFields,
     query: string,
-    userId: string,
+    userId?: string,
   ): Promise<string[]> {
     const regex = new RegExp(query, 'i');
     const fieldName = field.toString();
 
-    return this.profileModel
-      .find({
-        ownerId: userId,
-        [fieldName]: regex,
-      })
-      .distinct(fieldName)
-      .exec() as Promise<string[]>;
+    const filter: Record<string, any> = {
+      [fieldName]: regex,
+    };
+
+    if (userId) {
+      filter.ownerId = userId;
+    }
+
+    return this.profileModel.find(filter).distinct(fieldName).exec() as Promise<
+      string[]
+    >;
   }
 
   public async filterByFields(
     field: FilterableFields,
     query: string,
-    userId: string,
+    userId?: string,
   ): Promise<IProfile[]> {
     const regex = new RegExp(query, 'i');
 
-    return this.profileModel.find({
-      ownerId: userId,
+    const filter: Record<string, any> = {
       [field.toString()]: regex,
-    });
+    };
+
+    if (userId) {
+      filter.ownerId = userId;
+    }
+
+    return this.profileModel.find(filter);
   }
 
-  public async filterByAge(userId: string): Promise<IProfile[]> {
+  public async filterByAge(userId?: string): Promise<IProfile[]> {
     const today = new Date();
     const adultDay = new Date(
       today.getFullYear() - 18,
@@ -170,10 +190,15 @@ export class ProfileService {
       today.getDay(),
     );
 
-    return this.profileModel.find({
-      ownerId: userId,
+    const filter: Record<string, any> = {
       birthDate: { $lte: adultDay },
-    });
+    };
+
+    if (userId) {
+      filter.ownerId = userId;
+    }
+
+    return this.profileModel.find(filter);
   }
 
   public async getProfilesStats(): Promise<IStatsResponse> {

@@ -230,7 +230,7 @@ describe('ProfileService', () => {
       profileModel.find = findMock as any;
       profileModel.countDocuments = countMock as any;
 
-      const result = await service.findAllWithPagination('user-id', 2, 10);
+      const result = await service.findAllWithPagination(2, 10, 'user-id');
 
       expect(findMock).toHaveBeenCalledWith({ ownerId: 'user-id' });
       expect(skipMock).toHaveBeenCalledWith(10);
@@ -256,7 +256,7 @@ describe('ProfileService', () => {
       profileModel.find = findMock as any;
       profileModel.countDocuments = countMock as any;
 
-      const result = await service.findAllWithPagination('user-id', 2, 10);
+      const result = await service.findAllWithPagination(2, 10, 'user-id');
 
       expect(result).toEqual({
         data: fakeProfiles,
@@ -276,7 +276,7 @@ describe('ProfileService', () => {
       profileModel.find = findMock as any;
       profileModel.countDocuments = countMock as any;
 
-      await service.findAllWithPagination('user-id', 3, 5);
+      await service.findAllWithPagination(3, 5, 'user-id');
 
       expect(skipMock).toHaveBeenCalledWith(10);
       expect(limitMock).toHaveBeenCalledWith(5);

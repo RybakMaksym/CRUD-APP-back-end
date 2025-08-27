@@ -20,6 +20,7 @@ import { DEFAULT_PROFILES_PAGE_LIMIT } from '@/constants/profile.constants';
 import { GetUserId } from '@/decorators/get-user-id.decorator';
 import { FilterFields } from '@/enums/filter.enums';
 import { NotificationType } from '@/enums/notification.enums';
+import { Role } from '@/enums/role.enum';
 import { FileUploadService } from '@/file-upload/file-upload.service';
 import { CreateProfileDTO } from '@/profile/dto/create-profile.dto';
 import { UpdateProfileDTO } from '@/profile/dto/update-profile.dto';
@@ -46,7 +47,13 @@ export class ProfileController {
     @Query('page') page = 1,
     @Query('limit') limit = DEFAULT_PROFILES_PAGE_LIMIT,
   ): Promise<IPaginatedResponse<IProfile>> {
-    return this.profileService.findAllWithPagination(myId, +page, +limit);
+    const role = (await this.userService.findById(myId)).role;
+
+    if (role === Role.Admin) {
+      return this.profileService.findAllWithPagination(+page, +limit);
+    }
+
+    return this.profileService.findAllWithPagination(+page, +limit, myId);
   }
 
   @Get('profiles/:id')
@@ -56,7 +63,7 @@ export class ProfileController {
     @Query('page') page = 1,
     @Query('limit') limit = DEFAULT_PROFILES_PAGE_LIMIT,
   ): Promise<IPaginatedResponse<IProfile>> {
-    return this.profileService.findAllWithPagination(userId, +page, +limit);
+    return this.profileService.findAllWithPagination(+page, +limit, userId);
   }
 
   @Get('search')
@@ -65,6 +72,12 @@ export class ProfileController {
     @GetUserId() myId: string,
     @Query('query') query: string,
   ): Promise<IProfile[]> {
+    const role = (await this.userService.findById(myId)).role;
+
+    if (role === Role.Admin) {
+      return this.profileService.searchProfiles(query);
+    }
+
     return this.profileService.searchProfiles(query, myId);
   }
 
@@ -75,6 +88,12 @@ export class ProfileController {
     @Query('field') field: FilterableFields,
     @Query('query') query: string,
   ): Promise<string[]> {
+    const role = (await this.userService.findById(myId)).role;
+
+    if (role === Role.Admin) {
+      return this.profileService.getFilterSuggestions(field, query);
+    }
+
     return this.profileService.getFilterSuggestions(field, query, myId);
   }
 
@@ -85,11 +104,14 @@ export class ProfileController {
     @Query('field') field: FilterFields,
     @Query('query') query: string,
   ): Promise<IProfile[]> {
+    const { role } = await this.userService.findById(myId);
+    const ownerId = role === Role.Admin ? undefined : myId;
+
     if (field === 'age') {
-      return this.profileService.filterByAge(myId);
+      return this.profileService.filterByAge(ownerId);
     }
 
-    return this.profileService.filterByFields(field, query, myId);
+    return this.profileService.filterByFields(field, query, ownerId);
   }
 
   @Get('stats')

@@ -89,6 +89,7 @@ describe('ProfileController', () => {
         total: 1,
         nextPage: null,
       };
+      userService.findById.mockResolvedValue({ role: Role.User } as any);
       profileService.findAllWithPagination.mockResolvedValue(
         paginatedResponse as any,
       );
@@ -96,9 +97,9 @@ describe('ProfileController', () => {
       const result = await controller.getMyProfiles('user-id', 1, 8);
 
       expect(profileService.findAllWithPagination).toHaveBeenCalledWith(
-        'user-id',
         1,
         8,
+        'user-id',
       );
       expect(result).toEqual(paginatedResponse);
     });
@@ -126,9 +127,9 @@ describe('ProfileController', () => {
       const result = await controller.getProfilesByUserId(userId, page, limit);
 
       expect(profileService.findAllWithPagination).toHaveBeenCalledWith(
-        userId,
         page,
         limit,
+        userId,
       );
       expect(result).toEqual(paginatedProfiles);
     });
@@ -151,9 +152,9 @@ describe('ProfileController', () => {
       const result = await controller.getProfilesByUserId(userId, page, limit);
 
       expect(profileService.findAllWithPagination).toHaveBeenCalledWith(
-        userId,
         page,
         limit,
+        userId,
       );
       expect(result).toEqual(emptyPaginated);
     });
@@ -304,6 +305,7 @@ describe('ProfileController', () => {
       const query = 'Anna';
       const myId = 'user-id';
       const expected = [{ name: 'Anna', ownerId: myId }];
+      userService.findById.mockResolvedValue({ role: Role.User } as any);
       profileService.searchProfiles.mockResolvedValue(expected as any);
 
       const result = await controller.searchProfiles(myId, query);
@@ -316,6 +318,7 @@ describe('ProfileController', () => {
       const query = '';
       const myId = 'user-id';
       const expected = [{ name: 'Anna', ownerId: myId }];
+      userService.findById.mockResolvedValue({ role: Role.User } as any);
       profileService.searchProfiles.mockResolvedValue(expected as any);
 
       const result = await controller.searchProfiles(myId, query);
@@ -328,6 +331,7 @@ describe('ProfileController', () => {
   describe('getFilterSuggestions()', () => {
     it('should call service with correct params and return suggestions', async () => {
       const suggestions = ['Kyiv', 'Kharkiv'];
+      userService.findById.mockResolvedValue({ role: Role.User } as any);
       mockProfileService.getFilterSuggestions.mockResolvedValue(suggestions);
 
       const result = await controller.getFilterSuggestions(
@@ -348,6 +352,7 @@ describe('ProfileController', () => {
   describe('filterProfiles()', () => {
     it('should call filterByAge if field is "age"', async () => {
       const profiles = [{ name: 'Adult' }];
+      userService.findById.mockResolvedValue({ role: Role.User } as any);
       mockProfileService.filterByAge.mockResolvedValue(profiles);
 
       const result = await controller.filterProfiles(
@@ -362,6 +367,7 @@ describe('ProfileController', () => {
 
     it('should call filterByFields if field is "city" or "country"', async () => {
       const profiles = [{ name: 'Kyiv' }];
+      userService.findById.mockResolvedValue({ role: Role.User } as any);
       mockProfileService.filterByFields.mockResolvedValue(profiles);
 
       const result = await controller.filterProfiles(
