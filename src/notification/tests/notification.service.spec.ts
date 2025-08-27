@@ -42,6 +42,7 @@ describe('NotificationService', () => {
         type: NotificationType.PROFILE_EDIT,
         message: 'Profile updated',
         ownerId: '1',
+        isNew: false,
       };
       notificationModel.create.mockResolvedValue(dto);
 

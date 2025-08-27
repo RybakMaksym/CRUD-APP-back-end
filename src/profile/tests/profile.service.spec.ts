@@ -386,6 +386,7 @@ describe('ProfileService', () => {
         message,
         ownerId,
         createdAt: new Date(),
+        isNew: true,
       };
       const createNotification = jest
         .spyOn(service['notificationService'], 'createNotification')
@@ -401,6 +402,7 @@ describe('ProfileService', () => {
         type,
         message,
         ownerId,
+        isNew: true,
       });
       expect(sendNotification).toHaveBeenCalledWith(ownerId, mockNotification);
     });

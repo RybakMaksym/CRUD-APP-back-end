@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, UpdateQuery } from 'mongoose';
 
 import {
   Notification,
@@ -47,5 +47,12 @@ export class NotificationService {
       total,
       nextPage,
     };
+  }
+
+  public async updateNotificationById(
+    id: string,
+    update: UpdateQuery<NotificationDocument>,
+  ): Promise<void> {
+    this.notificationModel.findByIdAndUpdate(id, update).exec();
   }
 }

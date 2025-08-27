@@ -210,6 +210,7 @@ export class ProfileService {
       type: notificationType,
       message: notificationMessage,
       ownerId: ownerId,
+      isNew: true,
     });
 
     this.notificationGateway.sendNotification(ownerId.toString(), notification);

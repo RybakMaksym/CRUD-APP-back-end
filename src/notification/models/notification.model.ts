@@ -26,6 +26,9 @@ export class Notification extends Document implements INotification {
   @Prop({ required: true })
   public message: string;
 
+  @Prop({ required: true })
+  public isNew: boolean;
+
   @Prop({ ref: 'User', required: true })
   public ownerId: string;
 }

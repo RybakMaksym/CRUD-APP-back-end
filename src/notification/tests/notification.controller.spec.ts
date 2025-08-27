@@ -43,6 +43,7 @@ describe('NotificationController', () => {
       type: NotificationType.PROFILE_EDIT,
       message: 'Profile updated',
       ownerId: userId,
+      isNew: false,
     },
   ];
 

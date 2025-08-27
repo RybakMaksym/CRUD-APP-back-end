@@ -144,6 +144,7 @@ export class UserController {
           type: NotificationType.MADE_ADMIN,
           message: `You were made an admin by ${admin.username}`,
           ownerId: userId,
+          isNew: true,
         });
 
         this.notificationGateway.sendNotification(userId, notification);
