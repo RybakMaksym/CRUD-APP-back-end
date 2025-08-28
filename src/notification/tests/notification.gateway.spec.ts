@@ -41,6 +41,7 @@ describe('NotificationGateway', () => {
         type: NotificationType.PROFILE_EDIT,
         message: 'New notification',
         ownerId: userId,
+        isNew: false,
       };
 
       gateway.sendNotification(userId, payload);

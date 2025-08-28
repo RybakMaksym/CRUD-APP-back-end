@@ -136,7 +136,7 @@ export class UserController {
 
     let role = user.role;
 
-    if (dto.isAdmin) {
+    if (dto.isAdmin !== undefined) {
       role = dto.isAdmin ? Role.Admin : Role.User;
 
       if (role === Role.Admin && myId !== userId) {
@@ -144,6 +144,7 @@ export class UserController {
           type: NotificationType.MADE_ADMIN,
           message: `You were made an admin by ${admin.username}`,
           ownerId: userId,
+          isNew: true,
         });
 
         this.notificationGateway.sendNotification(userId, notification);

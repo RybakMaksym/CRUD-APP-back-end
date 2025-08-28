@@ -5,4 +5,5 @@ export interface INotification {
   type: NotificationType;
   message: string;
   ownerId: string;
+  isNew: boolean;
 }
