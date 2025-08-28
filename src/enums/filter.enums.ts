@@ -1,5 +1,5 @@
 export enum FilterFields {
-  COUNRTY = 'country',
+  COUNTRY = 'country',
   CITY = 'city',
   AGE = 'age',
 }
