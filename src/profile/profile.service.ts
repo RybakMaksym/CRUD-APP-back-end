@@ -229,11 +229,13 @@ export class ProfileService {
   public async sendProfileNotification(
     ownerId: string,
     notificationType: NotificationType,
-    notificationMessage: string,
+    admin: string,
+    profile?: string,
   ): Promise<void> {
     const notification = await this.notificationService.createNotification({
       type: notificationType,
-      message: notificationMessage,
+      profile: profile ?? undefined,
+      admin: admin,
       ownerId: ownerId,
       isNew: true,
     });

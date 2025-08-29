@@ -40,7 +40,7 @@ describe('NotificationService', () => {
     it('should create and return notification', async () => {
       const dto: INotification = {
         type: NotificationType.PROFILE_EDIT,
-        message: 'Profile updated',
+        admin: 'admin',
         ownerId: '1',
         isNew: false,
       };
@@ -58,18 +58,18 @@ describe('NotificationService', () => {
       const userId = 'user-id';
       const page = 1;
       const limit = 2;
-      const mockNotifications = [
+      const mockNotifications: INotification[] = [
         {
-          type: 'PROFILE_EDIT',
-          message: 'Profile edited',
+          type: NotificationType.PROFILE_EDIT,
+          admin: 'admin',
           ownerId: userId,
-          createdAt: new Date(),
+          isNew: false,
         },
         {
-          type: 'PROFILE_DELETE',
-          message: 'Profile deleted',
+          type: NotificationType.PROFILE_EDIT,
+          admin: 'admin',
           ownerId: userId,
-          createdAt: new Date(),
+          isNew: false,
         },
       ];
       notificationModel.find.mockReturnValue({

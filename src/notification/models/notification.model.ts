@@ -24,7 +24,10 @@ export class Notification extends Document implements INotification {
   public type: NotificationType;
 
   @Prop({ required: true })
-  public message: string;
+  public admin: string;
+
+  @Prop()
+  public profile?: string;
 
   @Prop({ required: true })
   public isNew: boolean;

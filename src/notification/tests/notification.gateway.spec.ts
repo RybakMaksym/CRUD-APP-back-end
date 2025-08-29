@@ -39,7 +39,7 @@ describe('NotificationGateway', () => {
       const userId = '';
       const payload: INotification = {
         type: NotificationType.PROFILE_EDIT,
-        message: 'New notification',
+        admin: 'admin',
         ownerId: userId,
         isNew: false,
       };

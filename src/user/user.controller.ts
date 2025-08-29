@@ -143,7 +143,7 @@ export class UserController {
       if (role === Role.Admin && myId !== userId) {
         const notification = await this.notificationService.createNotification({
           type: NotificationType.MADE_ADMIN,
-          message: `You were made an admin by ${admin.username}`,
+          admin: admin.username,
           ownerId: userId,
           isNew: true,
         });

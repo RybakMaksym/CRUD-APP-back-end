@@ -165,7 +165,8 @@ export class ProfileController {
       await this.profileService.sendProfileNotification(
         profile.ownerId,
         NotificationType.PROFILE_EDIT,
-        `Profile ${profile.name} was edited by ${admin.username}`,
+        admin.username,
+        profile.name,
       );
     }
 
@@ -193,7 +194,8 @@ export class ProfileController {
       await this.profileService.sendProfileNotification(
         profile.ownerId,
         NotificationType.PROFILE_DELETE,
-        `Profile ${profile.name} was deleted by ${admin.username}`,
+        admin.username,
+        profile.name,
       );
     }
 

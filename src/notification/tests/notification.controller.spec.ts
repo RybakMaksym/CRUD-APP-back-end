@@ -41,7 +41,7 @@ describe('NotificationController', () => {
   const mockNotifications: INotification[] = [
     {
       type: NotificationType.PROFILE_EDIT,
-      message: 'Profile updated',
+      admin: 'admin',
       ownerId: userId,
       isNew: false,
     },

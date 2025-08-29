@@ -379,11 +379,10 @@ describe('ProfileService', () => {
     it('should create notification and send it via gateway', async () => {
       const ownerId = '';
       const type = NotificationType.PROFILE_EDIT;
-      const message = 'Your profile was updated';
       const mockNotification = {
         id: 'notif-id',
         type,
-        message,
+        admin: 'admin',
         ownerId,
         createdAt: new Date(),
         isNew: true,
@@ -396,11 +395,12 @@ describe('ProfileService', () => {
         'sendNotification',
       );
 
-      await service.sendProfileNotification(ownerId, type, message);
+      await service.sendProfileNotification(ownerId, type, 'admin');
 
       expect(createNotification).toHaveBeenCalledWith({
         type,
-        message,
+        admin: 'admin',
+        profile: undefined,
         ownerId,
         isNew: true,
       });
